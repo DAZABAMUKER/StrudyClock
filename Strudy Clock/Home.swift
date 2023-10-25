@@ -32,7 +32,6 @@ var ClockColor = [
     Color(red: 233/255, green: 184/255, blue: 36/255),
     Color(red: 238/255, green: 147/255, blue: 34/255),
     Color(red: 216/255, green: 63/255, blue: 49/255),
-    
     Color.white
 ]
 
@@ -93,7 +92,8 @@ struct Home: View {
             let myData = try? JSONEncoder().encode(self.subjects)
             FileManager.default.createFile(atPath: subjectJson.path(), contents: myData)
         } else {
-            
+            let myData = try? JSONEncoder().encode(self.subjects)
+            FileManager.default.createFile(atPath: subjectJson.path(), contents: myData)
         }
     }
     
@@ -219,7 +219,6 @@ struct Home: View {
     var body: some View {
         ZStack{
             self.functions
-            
             GeometryReader{ geometry in
                 ZStack{}.onAppear() {
                     self.scHeight = geometry.size.height
@@ -261,12 +260,37 @@ struct Home: View {
                         Button {
                             self.makeSub = true
                         } label: {
-                            Text("과목 추가하기")
+                            HStack{
+                                Spacer()
+                                Text("과목 추가하기")
+                                    .foregroundStyle(ClockColor[0])
+                                    .padding(8)
+                                Spacer()
+                            }
+                            
+                            .background() {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(lineWidth: 2.0)
+                                    .foregroundStyle(ClockColor[0])
+                            }
+                            .padding(.horizontal)
                         }
+                        .padding(.vertical,5)
                         Button {
                             self.SelSubject = false
                         } label: {
-                            Text("확인")
+                            HStack{
+                                Spacer()
+                                Text("확인")
+                                    .foregroundStyle(.white)
+                                    .padding(10)
+                                Spacer()
+                            }
+                            .background() {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundStyle(ClockColor[0])
+                            }
+                            .padding(.horizontal)
                         }
                     } else {
                         VStack{
@@ -283,11 +307,23 @@ struct Home: View {
                                 .padding(.horizontal)
                             Button{
                                 self.subjects.append(self.addedSub)
-                                self.addedSub = ""
                                 self.makeSub = false
                                 saveSubjectArray()
+                                self.selectedSub = self.addedSub
+                                self.addedSub = ""
                             } label: {
-                                Text("확인")
+                                HStack{
+                                    Spacer()
+                                    Text("확인")
+                                        .foregroundStyle(.white)
+                                        .padding(10)
+                                    Spacer()
+                                }
+                                .background() {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .foregroundStyle(ClockColor[0])
+                                }
+                                .padding(.horizontal)
                             }
                             Spacer()
                         }
