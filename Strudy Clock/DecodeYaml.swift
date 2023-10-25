@@ -9,17 +9,18 @@ import Foundation
 
 struct Records: Codable {
     var data: [YamlData]
-    var totalTime: Int
+    var totalTime: Double
 }
 
 struct YamlData: Codable {
-    var date: Calendar
+    var date: DateComponents
     var subject: [Subject]
-    var totalTime: Int
+    var totalTime: Double
 }
 
 struct Subject: Codable {
     var subject: String
-    var time: Int
+    var time: Double
     
 }
+

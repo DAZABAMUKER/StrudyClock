@@ -48,8 +48,15 @@ struct Home: View {
     @State var TimeMin: Int = 0
     @State var TimeSec: Int = 0
     
-    @State var degree = 3599.9
+    @State var SelSubject = false
+    @State var subjects: [String] = []
+    @State var selectedSub = "과목을 선택하세요"
+    @State var makeSub = false
+    @State var addedSub = ""
+    
     @State var AOD = true
+    
+    @State var degree = 3599.9
     @State var scWidth = 0.0
     @State var scHeight = 0.0
     @State var clockSize = 0.0
@@ -60,29 +67,35 @@ struct Home: View {
     @State var oldLocation: CGPoint = CGPoint.zero
     @State var colorNumber = ClockColor.count - 1
     @State var settingHour = 1.0
+    
     @StateObject var timers = Timers()
     @Environment(\.scenePhase) var phase
     //var timer = 0.0
     
-    var knob: some View {
-        Circle()
-            .foregroundStyle(.white)
-            .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-            .frame(width: clockSize*0.4, height: clockSize*0.4)
-            .offset(y: -clockSize*2)
-            .rotationEffect(.degrees(self.settingAngle))
-            .gesture(DragGesture().onChanged({ dot in
-                if degree >= 0 {
-                    change(location: dot.location)
-                    checkHour(location: dot.location)
-                } else {
-                    degree = 0.0
-                }
-            }))
-            .opacity(self.over ? 1.0 : 0.0)
+    private func loadSubjectArray() {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let subjectJson = url.appendingPathComponent("subject_array", conformingTo: .json)
+        if FileManager.default.fileExists(atPath: subjectJson.path()) {
+            guard let js = NSData(contentsOf: subjectJson) else {print("json not found!"); return}
+            let decoder = JSONDecoder()
+            guard let myData = try? decoder.decode([String].self, from: js as Data) else {print("subject Data not found!"); return}
+            self.subjects = myData
+        } else {
+            self.subjects = []
+        }
     }
     
-    
+    private func saveSubjectArray() {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let subjectJson = url.appendingPathComponent("subject_array", conformingTo: .json)
+        if FileManager.default.fileExists(atPath: subjectJson.path()) {
+            try? FileManager.default.removeItem(atPath: subjectJson.path)
+            let myData = try? JSONEncoder().encode(self.subjects)
+            FileManager.default.createFile(atPath: subjectJson.path(), contents: myData)
+        } else {
+            
+        }
+    }
     
     private func change(location: CGPoint) {
         
@@ -202,6 +215,7 @@ struct Home: View {
         }
     }
     
+    //MARK: - 바디 뷰
     var body: some View {
         ZStack{
             self.functions
@@ -221,10 +235,69 @@ struct Home: View {
                     .tint(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
                     .padding()
                 Spacer()
-                Text("토익")
-                    .fontDesign(.rounded)
-                    .font(.largeTitle)
-                    .bold()
+                Button(action: {
+                    self.SelSubject.toggle()
+                }, label: {
+                    Text(self.selectedSub)
+                        .fontDesign(.rounded)
+                        .font(.largeTitle)
+                        .bold()
+                        .foregroundStyle(self.selectedSub == "과목을 선택하세요" ? .gray : .black)
+                })
+                .sheet(isPresented: self.$SelSubject, content: {
+                    if !makeSub {
+                        Picker(selection: $selectedSub) {
+                            ForEach(self.subjects, id: \.self) {
+                                Text($0).tag($0)
+                            }
+                            Text("토익").tag("토익")
+                            Text("오픽").tag("오픽")
+                            
+                        } label: {
+                            Text("과목선택")
+                        }
+                        .pickerStyle(.wheel)
+                        .presentationDetents([.fraction(0.4)])
+                        Button {
+                            self.makeSub = true
+                        } label: {
+                            Text("과목 추가하기")
+                        }
+                        Button {
+                            self.SelSubject = false
+                        } label: {
+                            Text("확인")
+                        }
+                    } else {
+                        VStack{
+                            Text("추가하실 과목을 입력해주세요.")
+                                .padding()
+                                .font(.title2)
+                                .frame(height: 50)
+                                .foregroundStyle(ClockColor[0])
+                                .presentationDetents([.fraction(0.2)])
+                            TextField("과목 입력", text: $addedSub)
+                                .padding(6)
+                                .background(.gray.opacity(0.3))
+                                .cornerRadius(10)
+                                .padding(.horizontal)
+                            Button{
+                                self.subjects.append(self.addedSub)
+                                self.addedSub = ""
+                                self.makeSub = false
+                                saveSubjectArray()
+                            } label: {
+                                Text("확인")
+                            }
+                            Spacer()
+                        }
+                    }
+                })
+                .onAppear(){
+                    if self.subjects == [] {
+                        self.loadSubjectArray()
+                    }
+                }
                 ZStack{
                     Circle()
                         .frame(width: self.clockSize*4)
@@ -286,101 +359,126 @@ struct Home: View {
                     
                 }
                 Spacer()
-                VStack{
-                    Button(action: {
-                        self.timeSet.toggle()
-                    }, label: {
-                        Text("시간 설정")
-                            .foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
-                            .padding(.horizontal, 20)
-                    })
-                    .sheet(isPresented: $timeSet, content: {
-                        VStack{
-                            HStack{
-                                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-                                    Image(systemName: "x.square")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 30, height: 30)
-                                        .padding()
-                                        .foregroundStyle(ClockColor[0])
-                                })
-                                Spacer()
-                                Text("시간 선택")
-                                    .fontDesign(.rounded)
-                                    .bold()
-                                    .foregroundStyle(ClockColor[0])
-                                    .font(.title3)
-                                Spacer()
-                                Button(action: {
-                                    self.timeSet = false
-                                    self.degree = Double(self.TimeHour * 3600 + self.TimeMin * 60 + self.TimeSec)
-                                    var results = ""
-                                    if self.degree < 3600 {
-                                        results = "\(String(format:"%02d", self.TimeMin)) : \(String(format:"%02d", self.TimeSec))"
-                                    } else {
-                                        results = "\(String(format:"%02d",self.TimeHour)) : \(String(format:"%02d",self.TimeMin)) : \(String(format:"%02d",self.TimeSec))"
-                                    }
-                                    timers.timeString = results
-                                }, label: {
-                                    Text("확인")
-                                        //.frame(width: 30, height: 20)
-                                        .padding(7)
-                                        .foregroundStyle(ClockColor[0])
-                                })
-                                //.buttonStyle(.borderedProminent)
-                                .tint(.clear)
-                                //.frame(width: 40, height: 25)
-                                //.padding(.horizontal)
-                                .border(ClockColor[0], width: 2.5)
-                                .padding()
-                            }
-                            HStack{
-                                Picker(selection: $TimeHour) {
-                                    ForEach(0..<24){ i in
-                                        Text("\(i)")
-                                    }
-                                    .foregroundStyle(ClockColor[0])
-                                } label: {
-                                    Text("사간 선택")
-                                }
-                                .pickerStyle(.wheel)
-                                .presentationDetents([.fraction(0.4)])
-                                Text(":")
-                                Picker(selection: $TimeMin) {
-                                    ForEach(0..<60){ i in
-                                        Text("\(i)")
-                                    }
-                                    .foregroundStyle(ClockColor[0])
-                                } label: {
-                                    Text("사간 선택")
-                                }
-                                .pickerStyle(.wheel)
-                                Text(":")
-                                Picker(selection: $TimeSec) {
-                                    ForEach(0..<60){ i in
-                                        Text("\(i)")
-                                    }
-                                    .foregroundStyle(ClockColor[0])
-                                } label: {
-                                    Text("사간 선택")
-                                }
-                                .pickerStyle(.wheel)
-                            }
-                        }
-                    })
-                    Text(timers.timeString)
-                        .font(.largeTitle)
-                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                        .fontDesign(.rounded)
-                        .foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
-                }
+                self.timeSelection
                 // String(format: "%.f",floor(((degree - timers.value))/60.0))):\(String(format:"%02.f",(degree-timers.value).truncatingRemainder(dividingBy: 60))
                 //Text(String(Int(degree.truncatingRemainder(dividingBy: 3600))))
                 Spacer()
             }
         }
     }
+    
+    var knob: some View {
+        Circle()
+            .foregroundStyle(.white)
+            .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+            .frame(width: clockSize*0.4, height: clockSize*0.4)
+            .offset(y: -clockSize*2)
+            .rotationEffect(.degrees(self.settingAngle))
+            .gesture(DragGesture().onChanged({ dot in
+                if degree >= 0 {
+                    change(location: dot.location)
+                    checkHour(location: dot.location)
+                } else {
+                    degree = 0.0
+                }
+            }))
+            .opacity(self.over ? 1.0 : 0.0)
+    }
+    
+    var timeSelection: some View {
+        VStack{
+            Button(action: {
+                self.timeSet.toggle()
+            }, label: {
+                Text("시간 설정")
+                    .foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
+                    .padding(.horizontal, 20)
+            })
+            .sheet(isPresented: $timeSet, content: {
+                VStack{
+                    HStack{
+                        Button(action: {
+                            self.timeSet = false
+                        }, label: {
+                            Image(systemName: "x.square")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 30, height: 30)
+                                .padding()
+                                .foregroundStyle(ClockColor[0])
+                        })
+                        Spacer()
+                        Text("시간 선택")
+                            .fontDesign(.rounded)
+                            .bold()
+                            .foregroundStyle(ClockColor[0])
+                            .font(.title3)
+                        Spacer()
+                        Button(action: {
+                            self.timeSet = false
+                            self.degree = Double(self.TimeHour * 3600 + self.TimeMin * 60 + self.TimeSec)
+                            var results = ""
+                            if self.degree < 3600 {
+                                results = "\(String(format:"%02d", self.TimeMin)) : \(String(format:"%02d", self.TimeSec))"
+                            } else {
+                                results = "\(String(format:"%02d",self.TimeHour)) : \(String(format:"%02d",self.TimeMin)) : \(String(format:"%02d",self.TimeSec))"
+                            }
+                            timers.timeString = results
+                        }, label: {
+                            Text("확인")
+                                //.frame(width: 30, height: 20)
+                                .padding(7)
+                                .foregroundStyle(ClockColor[0])
+                        })
+                        //.buttonStyle(.borderedProminent)
+                        .tint(.clear)
+                        //.frame(width: 40, height: 25)
+                        //.padding(.horizontal)
+                        .border(ClockColor[0], width: 2.5)
+                        .padding()
+                    }
+                    HStack{
+                        Picker(selection: $TimeHour) {
+                            ForEach(0..<24){ i in
+                                Text("\(i)")
+                            }
+                            .foregroundStyle(ClockColor[0])
+                        } label: {
+                            Text("사간 선택")
+                        }
+                        .pickerStyle(.wheel)
+                        .presentationDetents([.fraction(0.4)])
+                        Text(":")
+                        Picker(selection: $TimeMin) {
+                            ForEach(0..<60){ i in
+                                Text("\(i)")
+                            }
+                            .foregroundStyle(ClockColor[0])
+                        } label: {
+                            Text("사간 선택")
+                        }
+                        .pickerStyle(.wheel)
+                        Text(":")
+                        Picker(selection: $TimeSec) {
+                            ForEach(0..<60){ i in
+                                Text("\(i)")
+                            }
+                            .foregroundStyle(ClockColor[0])
+                        } label: {
+                            Text("사간 선택")
+                        }
+                        .pickerStyle(.wheel)
+                    }
+                }
+            })
+            Text(timers.timeString)
+                .font(.largeTitle)
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                .fontDesign(.rounded)
+                .foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
+        }
+    }
+    
 }
 
 #Preview {

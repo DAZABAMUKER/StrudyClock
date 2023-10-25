@@ -106,13 +106,11 @@ extension Timers {
 }
 
 extension Timers {
-    
-    
     func SaveData() {
         let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let recordYaml = url.appendingPathComponent("record", conformingTo: .json)
-        if FileManager.default.fileExists(atPath: recordYaml.path) {
-            guard let js = NSData(contentsOf: recordYaml) else { return }
+        let recordJson = url.appendingPathComponent("record", conformingTo: .json)
+        if FileManager.default.fileExists(atPath: recordJson.path) {
+            guard let js = NSData(contentsOf: recordJson) else { return }
             let decoder = JSONDecoder()
             guard let myData = try? decoder.decode(Records.self, from: js as Data) else {
                 return
@@ -120,10 +118,16 @@ extension Timers {
             self.oldData = myData
             //var dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date.now)
             //dateComponents.timeZone = NSTimeZone.system
-            if self.oldData?.data.last?.date ?? Calendar.current == Calendar.current {
+            let calander = Calendar(identifier: .gregorian)
+            let dateComponent = calander.dateComponents([.year, .month, .day], from: Date())
+            if self.oldData?.data.last?.date ?? calander.dateComponents([.year, .month, .day], from: Date()) == calander.dateComponents([.year, .month, .day], from: Date()) {
                 //let total = self.oldData?.data.last?.date.timeZone
+                self.oldData?.totalTime += self.value
+            } else {
+                self.oldData?.totalTime += self.value
+                self.oldData?.data.append(YamlData(date: dateComponent, subject: [Subject(subject: "토익", time: self.value)], totalTime: self.value))
             }
-            try? FileManager.default.removeItem(atPath: recordYaml.path)
+            try? FileManager.default.removeItem(atPath: recordJson.path)
         }
         
     }
