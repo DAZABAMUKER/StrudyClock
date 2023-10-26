@@ -153,7 +153,7 @@ struct Home: View {
     }
     
     func TimeOver() {
-        timers.SaveData()
+        timers.SaveData(subjectOfTimer: self.selectedSub)
         self.over = true
         timers.stop()
         timers.value = 0.0
@@ -273,9 +273,6 @@ struct Home: View {
                                 }
                             }
                         }
-                        .onDisappear(){
-                            timers.subject = self.selectedSub
-                        }
                         Button {
                             self.makeSub = true
                         } label: {
@@ -297,7 +294,6 @@ struct Home: View {
                         .padding(.vertical,5)
                         Button {
                             self.SelSubject = false
-                            self.timers.subject = self.selectedSub
                         } label: {
                             HStack{
                                 Spacer()

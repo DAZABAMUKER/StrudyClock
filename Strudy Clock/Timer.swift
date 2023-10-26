@@ -8,14 +8,15 @@
 import Foundation
 import SwiftUI
 import Combine
-
+//MARK: - 타이머 클래스 설명
+// 타이머의 핵심 코어 기능 집합 클래스
 class Timers: ObservableObject {
     @Published var value = 0.0
     @Published var pauses: Bool = true
     @Published var isRunning = false
     @Published var timeString: String = "01:00:00"
     @Published var SettingDegree: Double = 0.0 
-    @Published var subject: String = ""
+    //@Published var subject: String = ""
     
     var oldData: Records? = nil
     
@@ -108,7 +109,7 @@ extension Timers {
 }
 
 extension Timers {
-    func SaveData() {
+    func SaveData(subjectOfTimer: String) {
         let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let recordJson = url.appendingPathComponent("record", conformingTo: .json)
         let calander = Calendar(identifier: .gregorian)
@@ -124,9 +125,9 @@ extension Timers {
                 var SubjectsOfDate = DataOfDate?.subject
                 let filteredData = SubjectsOfDate?.map{$0.subject}
                 guard let subjects = filteredData else {print("No subjects"); return}
-                if subjects.contains(self.subject) {
-                    let myData = SubjectsOfDate?.filter{$0.subject == self.subject}
-                    let addSubject = Subject(subject: self.subject, time: (myData?.first?.time ?? 0.0) + value)
+                if subjects.contains(subjectOfTimer) {
+                    let myData = SubjectsOfDate?.filter{$0.subject == subjectOfTimer}
+                    let addSubject = Subject(subject: subjectOfTimer, time: (myData?.first?.time ?? 0.0) + value)
                     SubjectsOfDate?.removeLast()
                     SubjectsOfDate?.append(addSubject)
                     DataOfDate?.subject = SubjectsOfDate!
@@ -135,7 +136,7 @@ extension Timers {
                     self.oldData?.data.removeLast()
                     self.oldData?.data.append(lastData)
                 } else {
-                    let addSubject = Subject(subject: self.subject, time: value)
+                    let addSubject = Subject(subject: subjectOfTimer, time: value)
                     SubjectsOfDate?.append(addSubject)
                     DataOfDate?.subject = SubjectsOfDate!
                     DataOfDate?.totalTime += self.value
@@ -145,14 +146,14 @@ extension Timers {
                 }
             } else {
                 self.oldData?.totalTime += self.value
-                self.oldData?.data.append(YamlData(date: dateComponent, subject: [Subject(subject: self.subject, time: self.value)], totalTime: self.value))
+                self.oldData?.data.append(YamlData(date: dateComponent, subject: [Subject(subject: subjectOfTimer, time: self.value)], totalTime: self.value))
             }
             try? FileManager.default.removeItem(atPath: recordJson.path)
             let myData = try? JSONEncoder().encode(self.oldData)
             FileManager.default.createFile(atPath: recordJson.path(), contents: myData)
             print(recordJson.path())
         } else {
-            let subjectInfo = Subject(subject: self.subject, time: self.value)
+            let subjectInfo = Subject(subject: subjectOfTimer, time: self.value)
             let data = YamlData(date: dateComponent, subject: [subjectInfo], totalTime: self.value)
             self.oldData = Records(data: [data], totalTime: self.value)
             let myData = try? JSONEncoder().encode(self.oldData)
@@ -174,7 +175,7 @@ extension Timers {
             }
             self.oldData = myData
         } else {
-            //let subjectInfo = Subject(subject: self.subject, time: 0.0)
+            //let subjectInfo = Subject(subject: subjectOfTimer, time: 0.0)
             //let data = YamlData(date: dateComponent, subject: [], totalTime: 0.0)
             self.oldData = Records(data: [], totalTime: 0.0)
         }
