@@ -55,6 +55,8 @@ struct Home: View {
     
     @State var AOD = true
     
+    @State var sujectAlert = false
+    
     @State var degree = 3599.9
     @State var scWidth = 0.0
     @State var scHeight = 0.0
@@ -107,7 +109,7 @@ struct Home: View {
             if self.over {
                 timers.value = 0.0
                 var angle = self.settingAngle
-                print(angle)
+                //print(angle)
                 if self.settingAngle < 0 {
                     angle = 360 + self.settingAngle
                 }
@@ -151,9 +153,11 @@ struct Home: View {
     }
     
     func TimeOver() {
+        timers.SaveData()
         self.over = true
         timers.stop()
         timers.value = 0.0
+        
         self.pauses = true
         self.degree = 0.0
         self.settingAngle = 0.0
@@ -257,6 +261,21 @@ struct Home: View {
                         }
                         .pickerStyle(.wheel)
                         .presentationDetents([.fraction(0.4)])
+                        .onAppear() {
+                            // 과목 선택 sheet 올라올 때 과목 선택 바로 반영
+                            if self.selectedSub == "과목을 선택하세요" {
+                                if self.subjects.count != 0 {
+                                    self.selectedSub = self.subjects.first! //과목 목록이 있으면 첫 요소로 선택
+                                    //timers.subject = self.selectedSub
+                                } else {
+                                    self.selectedSub = "토익" // 없으면 토익으로
+                                    //timers.subject = self.selectedSub
+                                }
+                            }
+                        }
+                        .onDisappear(){
+                            timers.subject = self.selectedSub
+                        }
                         Button {
                             self.makeSub = true
                         } label: {
@@ -278,6 +297,7 @@ struct Home: View {
                         .padding(.vertical,5)
                         Button {
                             self.SelSubject = false
+                            self.timers.subject = self.selectedSub
                         } label: {
                             HStack{
                                 Spacer()
@@ -372,7 +392,11 @@ struct Home: View {
                             .foregroundStyle(.white)
                             .frame(width: self.clockSize)
                         //.shadow(radius: 7)
-                        Button(action: {
+                        Button{
+                            if self.selectedSub == "과목을 선택하세요" {
+                                self.sujectAlert = true
+                                return
+                            }
                             if self.pauses {
                                 timers.SettingDegree = self.degree
                                 timers.start()
@@ -381,14 +405,21 @@ struct Home: View {
                                 timers.stop()
                             }
                             self.pauses.toggle()
-                        }, label: {
+                        } label: {
                             Image(systemName: self.pauses ? "play.fill" :"pause.fill")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: self.clockSize*0.5, height: self.clockSize*0.5)
                                 .padding(.leading, self.pauses ? self.clockSize/14 : 0)
                                 .foregroundColor(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
-                        })
+                        }
+                        .alert("과목윽 선택하세요!", isPresented: $sujectAlert) {
+                            Text("확인")
+                                .tint(ClockColor[0])
+                        } message: {
+                            Text("과목을 선택하지 않으면 타이머가 작동하지 않습니다.")
+                        }
+
                         
                     }
                     //.shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)

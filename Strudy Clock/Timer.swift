@@ -15,6 +15,7 @@ class Timers: ObservableObject {
     @Published var isRunning = false
     @Published var timeString: String = "01:00:00"
     @Published var SettingDegree: Double = 0.0 
+    @Published var subject: String = ""
     
     var oldData: Records? = nil
     
@@ -39,7 +40,7 @@ class Timers: ObservableObject {
     
     
     init() {
-        
+        loadData()
     }
     
     func secondsToHoursMinutesSeconds(_ seconds: Int = 0) -> String {
@@ -95,6 +96,7 @@ extension Timers {
         startTime = Date()
     }
     func stop() {
+        //SaveData()
         timer?.cancel()
         timer = nil
         startTime = nil
@@ -109,6 +111,61 @@ extension Timers {
     func SaveData() {
         let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let recordJson = url.appendingPathComponent("record", conformingTo: .json)
+        let calander = Calendar(identifier: .gregorian)
+        var dateComponent = calander.dateComponents([.year, .month, .day], from: Date())
+        dateComponent.timeZone = NSTimeZone.system
+        if FileManager.default.fileExists(atPath: recordJson.path) {
+            guard let js = NSData(contentsOf: recordJson) else { return }
+            let decoder = JSONDecoder()
+            if self.oldData?.data.last?.date ?? dateComponent == dateComponent {
+                //let total = self.oldData?.data.last?.date.timeZone
+                self.oldData?.totalTime += self.value
+                var DataOfDate = self.oldData?.data.filter{ $0.date == dateComponent}.first
+                var SubjectsOfDate = DataOfDate?.subject
+                let filteredData = SubjectsOfDate?.map{$0.subject}
+                guard let subjects = filteredData else {print("No subjects"); return}
+                if subjects.contains(self.subject) {
+                    let myData = SubjectsOfDate?.filter{$0.subject == self.subject}
+                    let addSubject = Subject(subject: self.subject, time: (myData?.first?.time ?? 0.0) + value)
+                    SubjectsOfDate?.removeLast()
+                    SubjectsOfDate?.append(addSubject)
+                    DataOfDate?.subject = SubjectsOfDate!
+                    DataOfDate?.totalTime += self.value
+                    guard let lastData = DataOfDate else {print("DataOfDate optional unwrap error");return}
+                    self.oldData?.data.removeLast()
+                    self.oldData?.data.append(lastData)
+                } else {
+                    let addSubject = Subject(subject: self.subject, time: value)
+                    SubjectsOfDate?.append(addSubject)
+                    DataOfDate?.subject = SubjectsOfDate!
+                    DataOfDate?.totalTime += self.value
+                    guard let lastData = DataOfDate else {print("DataOfDate optional unwrap error");return}
+                    self.oldData?.data.removeLast()
+                    self.oldData?.data.append(lastData)
+                }
+            } else {
+                self.oldData?.totalTime += self.value
+                self.oldData?.data.append(YamlData(date: dateComponent, subject: [Subject(subject: self.subject, time: self.value)], totalTime: self.value))
+            }
+            try? FileManager.default.removeItem(atPath: recordJson.path)
+            let myData = try? JSONEncoder().encode(self.oldData)
+            FileManager.default.createFile(atPath: recordJson.path(), contents: myData)
+            print(recordJson.path())
+        } else {
+            let subjectInfo = Subject(subject: self.subject, time: self.value)
+            let data = YamlData(date: dateComponent, subject: [subjectInfo], totalTime: self.value)
+            self.oldData = Records(data: [data], totalTime: self.value)
+            let myData = try? JSONEncoder().encode(self.oldData)
+            FileManager.default.createFile(atPath: recordJson.path(), contents: myData)
+            print(recordJson.path())
+        }
+    }
+    func loadData() {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let recordJson = url.appendingPathComponent("record", conformingTo: .json)
+        let calander = Calendar(identifier: .gregorian)
+        var dateComponent = calander.dateComponents([.year, .month, .day], from: Date())
+        dateComponent.timeZone = NSTimeZone.system
         if FileManager.default.fileExists(atPath: recordJson.path) {
             guard let js = NSData(contentsOf: recordJson) else { return }
             let decoder = JSONDecoder()
@@ -116,19 +173,10 @@ extension Timers {
                 return
             }
             self.oldData = myData
-            //var dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date.now)
-            //dateComponents.timeZone = NSTimeZone.system
-            let calander = Calendar(identifier: .gregorian)
-            let dateComponent = calander.dateComponents([.year, .month, .day], from: Date())
-            if self.oldData?.data.last?.date ?? calander.dateComponents([.year, .month, .day], from: Date()) == calander.dateComponents([.year, .month, .day], from: Date()) {
-                //let total = self.oldData?.data.last?.date.timeZone
-                self.oldData?.totalTime += self.value
-            } else {
-                self.oldData?.totalTime += self.value
-                self.oldData?.data.append(YamlData(date: dateComponent, subject: [Subject(subject: "토익", time: self.value)], totalTime: self.value))
-            }
-            try? FileManager.default.removeItem(atPath: recordJson.path)
+        } else {
+            //let subjectInfo = Subject(subject: self.subject, time: 0.0)
+            //let data = YamlData(date: dateComponent, subject: [], totalTime: 0.0)
+            self.oldData = Records(data: [], totalTime: 0.0)
         }
-        
     }
 }
