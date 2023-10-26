@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVKit
 
 var ClockColor = [
     Color(red: 216/255, green: 63/255, blue: 49/255),
@@ -71,7 +72,8 @@ struct Home: View {
     
     @StateObject var timers = Timers()
     @Environment(\.scenePhase) var phase
-    //var timer = 0.0
+    
+    @State var player: AVAudioPlayer?
     
     private func loadSubjectArray() {
         let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -161,6 +163,13 @@ struct Home: View {
         self.pauses = true
         self.degree = 0.0
         self.settingAngle = 0.0
+        do {
+            let asset = NSDataAsset(name: "cow-bells")
+            player = try AVAudioPlayer(data:asset!.data, fileTypeHint:"wav")
+            player?.play()
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     func secondsToHoursMinutesSeconds(_ seconds: Int = 0) -> String {
