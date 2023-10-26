@@ -128,7 +128,9 @@ extension Timers {
                 if subjects.contains(subjectOfTimer) {
                     let myData = SubjectsOfDate?.filter{$0.subject == subjectOfTimer}
                     let addSubject = Subject(subject: subjectOfTimer, time: (myData?.first?.time ?? 0.0) + value)
-                    SubjectsOfDate?.removeLast() // 이거 먼저 해결하자 특정 서브젝트 인덱스 구해서 제거하기
+                    guard let oldSubject = SubjectsOfDate?.filter({$0.subject == addSubject.subject}).first else {print("old subject Data uwrap error"); return}
+                    guard let indexOfSubject = SubjectsOfDate?.firstIndex(of: oldSubject) else {print("index of subject unwrap error");return}
+                    SubjectsOfDate?.remove(at: indexOfSubject) // 이거 먼저 해결하자 특정 서브젝트 인덱스 구해서 제거하기
                     SubjectsOfDate?.append(addSubject)
                     DataOfDate?.subject = SubjectsOfDate!
                     DataOfDate?.totalTime += self.value
@@ -175,8 +177,6 @@ extension Timers {
             }
             self.oldData = myData
         } else {
-            //let subjectInfo = Subject(subject: subjectOfTimer, time: 0.0)
-            //let data = YamlData(date: dateComponent, subject: [], totalTime: 0.0)
             self.oldData = Records(data: [], totalTime: 0.0)
         }
     }
