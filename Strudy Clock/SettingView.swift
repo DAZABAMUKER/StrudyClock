@@ -6,11 +6,18 @@
 //
 
 import SwiftUI
+import Charts
 
 struct SettingView: View {
+    
     var body: some View {
-        Text("설정")
+        VStack{
+            Text("설정")
+        }
     }
+    
+    
+    
 }
 
 #Preview {
