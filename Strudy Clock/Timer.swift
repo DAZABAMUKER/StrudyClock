@@ -128,7 +128,7 @@ extension Timers {
                 if subjects.contains(subjectOfTimer) {
                     let myData = SubjectsOfDate?.filter{$0.subject == subjectOfTimer}
                     let addSubject = Subject(subject: subjectOfTimer, time: (myData?.first?.time ?? 0.0) + value)
-                    SubjectsOfDate?.removeLast()
+                    SubjectsOfDate?.removeLast() // 이거 먼저 해결하자 특정 서브젝트 인덱스 구해서 제거하기
                     SubjectsOfDate?.append(addSubject)
                     DataOfDate?.subject = SubjectsOfDate!
                     DataOfDate?.totalTime += self.value
