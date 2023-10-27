@@ -43,6 +43,8 @@ enum Times {
 }
 
 struct Home: View {
+    
+    //MARK: - 변수
     @State var timeSet = false
     @State var TimeHour: Int = 0
     @State var TimeMin: Int = 0
@@ -72,8 +74,393 @@ struct Home: View {
     
     @StateObject var timers = Timers()
     @Environment(\.scenePhase) var phase
+    @Environment(\.colorScheme) var colorScheme
     
     @State var player: AVAudioPlayer?
+    
+    
+    
+    
+    //MARK: - 바디 뷰
+    var body: some View {
+        ZStack{
+            self.functions
+            GeometryReader{ geometry in
+                ZStack{Spacer()}.onAppear() {
+                    self.scHeight = geometry.size.height
+                    self.scWidth = geometry.size.width
+                    self.clockSize = scWidth > scHeight ? self.scHeight : self.scWidth
+                    self.clockSize = self.clockSize/6
+                }
+                .onChange(of: geometry.size) { _ in
+                    self.scHeight = geometry.size.height
+                    self.scWidth = geometry.size.width
+                    self.clockSize = scWidth > scHeight ? self.scHeight : self.scWidth
+                    self.clockSize = self.clockSize/6
+                }
+//                .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification), perform: { _ in
+//                    self.scHeight = geometry.size.height
+//                    self.scWidth = geometry.size.width
+//                    self.clockSize = scWidth > scHeight ? self.scHeight : self.scWidth
+//                    self.clockSize = self.clockSize/6
+//                })
+                //.border(.red)
+            }
+            HStack{
+                if self.scWidth > self.scHeight {
+                    self.clockView
+                }
+                VStack{
+                    Toggle("화면 항상 켜기", isOn: $AOD)
+                    //.foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
+                        .tint(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
+                        .padding()
+                    Spacer()
+                    Button(action: {
+                        self.SelSubject.toggle()
+                    }, label: {
+                        HStack{
+                            Text(self.selectedSub)
+                                .fontDesign(.rounded)
+                                .font(.largeTitle)
+                                .bold()
+                                .foregroundStyle(self.selectedSub == "과목을 선택하세요" ? .gray : .black)
+                            if !self.pauses {
+                                Button{
+                                    TimeOver()
+                                } label: {
+                                    Image(systemName: "stop.fill")
+                                        .font(.title)
+                                        .foregroundStyle(ClockColor[0])
+                                }
+                            }
+                        }
+                    })
+                    Spacer()
+                    .sheet(isPresented: self.$SelSubject, content: {
+                        self.subSelView
+                    })
+                    .onAppear(){
+                        if self.subjects == [] {
+                            self.loadSubjectArray()
+                        }
+                    }
+                    //MARK: 시계
+                    if self.scWidth < self.scHeight {
+                        self.clockView
+                    } else {
+                        
+                    }
+                    Spacer()
+                    self.timeSelection
+                    Spacer()
+                }
+            }
+        }
+    }
+    
+}
+
+//MARK: 뷰 집합
+extension Home {
+    
+    var clockView: some View {
+        Group{
+            
+            ZStack{
+                Circle()
+                    .frame(width: self.clockSize*4)
+                    .foregroundColor(ClockColor[self.colorNumber])
+                Image("clock_num")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: self.clockSize * 5.2, height: self.clockSize * 5.2)
+                    .foregroundColor(self.colorScheme == .dark ? .white : .black)
+                TimerView(degrees: (degree.truncatingRemainder(dividingBy: 3600)-timers.value)/10)
+                    .stroke(lineWidth: self.clockSize*2)
+                    .frame(width: self.clockSize, height: self.clockSize)
+                    .rotationEffect(.degrees(270))
+                    .foregroundStyle(ClockColor[self.colorNumber-1])
+                    .shadow(radius: 5)
+                    .onChange(of: phase) { phaseStatus in
+                        if phaseStatus == .background {
+                            timers.backProcess()
+                        } else {
+                            timers.backgroundTime()
+                        }
+                    }
+                knob
+                ZStack{
+                    Circle()
+                        .foregroundStyle(.white)
+                        .frame(width: self.clockSize)
+                        .shadow(radius: 7)
+                    Triangle()
+                        .frame(width: self.clockSize/3, height: self.clockSize/3)
+                        .padding(.bottom , self.clockSize*1.2)
+                        .foregroundColor(.white)
+                        .rotationEffect(Angle(degrees: -(degree-timers.value)/10))
+                        .shadow(radius: 7)
+                    Circle()
+                        .foregroundStyle(.white)
+                        .frame(width: self.clockSize)
+                    Button{
+                        if self.selectedSub == "과목을 선택하세요" {
+                            self.sujectAlert = true
+                            return
+                        }
+                        if self.pauses {
+                            timers.SettingDegree = self.degree
+                            timers.start()
+                            self.over = false
+                        } else {
+                            timers.stop()
+                        }
+                        self.pauses.toggle()
+                    } label: {
+                        Image(systemName: self.pauses ? "play.fill" :"pause.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: self.clockSize*0.5, height: self.clockSize*0.5)
+                            .padding(.leading, self.pauses ? self.clockSize/14 : 0)
+                            .foregroundColor(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
+                    }
+                    .alert("과목윽 선택하세요!", isPresented: $sujectAlert) {
+                        Text("확인")
+                            .tint(ClockColor[0])
+                    } message: {
+                        Text("과목을 선택하지 않으면 타이머가 작동하지 않습니다.")
+                    }
+                }
+            }
+//            Spacer()
+//            self.timeSelection
+//            Spacer()
+        }
+    }
+    
+    var subSelView: some View {
+        Group{
+            if !makeSub {
+                Picker(selection: $selectedSub) {
+                    ForEach(self.subjects, id: \.self) {
+                        Text($0).tag($0)
+                    }
+                    Text("토익").tag("토익")
+                    Text("오픽").tag("오픽")
+                    
+                } label: {
+                    Text("과목선택")
+                }
+                .pickerStyle(.wheel)
+                .presentationDetents([.fraction(0.4)])
+                .onAppear() {
+                    // 과목 선택 sheet 올라올 때 과목 선택 바로 반영
+                    if self.selectedSub == "과목을 선택하세요" {
+                        if self.subjects.count != 0 {
+                            self.selectedSub = self.subjects.first! //과목 목록이 있으면 첫 요소로 선택
+                            //timers.subject = self.selectedSub
+                        } else {
+                            self.selectedSub = "토익" // 없으면 토익으로
+                            //timers.subject = self.selectedSub
+                        }
+                    }
+                }
+                Button {
+                    self.makeSub = true
+                } label: {
+                    HStack{
+                        Spacer()
+                        Text("과목 추가하기")
+                            .foregroundStyle(ClockColor[0])
+                            .padding(8)
+                        Spacer()
+                    }
+                    
+                    .background() {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(lineWidth: 2.0)
+                            .foregroundStyle(ClockColor[0])
+                    }
+                    .padding(.horizontal)
+                }
+                .padding(.vertical,5)
+                Button {
+                    self.SelSubject = false
+                } label: {
+                    HStack{
+                        Spacer()
+                        Text("확인")
+                            .foregroundStyle(.white)
+                            .padding(10)
+                        Spacer()
+                    }
+                    .background() {
+                        RoundedRectangle(cornerRadius: 10)
+                            .foregroundStyle(ClockColor[0])
+                    }
+                    .padding(.horizontal)
+                }
+            } else {
+                VStack{
+                    Text("추가하실 과목을 입력해주세요.")
+                        .padding()
+                        .font(.title2)
+                        .frame(height: 50)
+                        .foregroundStyle(ClockColor[0])
+                        .presentationDetents([.fraction(0.2)])
+                    TextField("과목 입력", text: $addedSub)
+                        .padding(6)
+                        .background(.gray.opacity(0.3))
+                        .cornerRadius(10)
+                        .padding(.horizontal)
+                    Button{
+                        self.subjects.append(self.addedSub)
+                        self.makeSub = false
+                        saveSubjectArray()
+                        self.selectedSub = self.addedSub
+                        self.addedSub = ""
+                    } label: {
+                        HStack{
+                            Spacer()
+                            Text("확인")
+                                .foregroundStyle(.white)
+                                .padding(10)
+                            Spacer()
+                        }
+                        .background() {
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundStyle(ClockColor[0])
+                        }
+                        .padding(.horizontal)
+                    }
+                    Spacer()
+                }
+            }
+        }
+    }
+    
+    var knob: some View {
+        Circle()
+            .foregroundStyle(.white)
+            .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+            .frame(width: clockSize*0.4, height: clockSize*0.4)
+            .offset(y: -clockSize*2)
+            .rotationEffect(.degrees(self.settingAngle))
+            .gesture(DragGesture().onChanged({ dot in
+                if degree >= 0 {
+                    change(location: dot.location)
+                    checkHour(location: dot.location)
+                } else {
+                    degree = 0.0
+                }
+            }))
+            .opacity(self.over ? 1.0 : 0.0)
+    }
+    
+    var timeSelection: some View {
+        VStack{
+            if !self.pauses {
+                
+            } else {
+                Button(action: {
+                    self.timeSet.toggle()
+                }, label: {
+                    Text("시간 설정")
+                        .foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
+                        .padding(.horizontal, 20)
+                })
+                .sheet(isPresented: $timeSet, content: {
+                    VStack{
+                        HStack{
+                            Button(action: {
+                                self.timeSet = false
+                            }, label: {
+                                Image(systemName: "x.square")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .padding()
+                                    .foregroundStyle(ClockColor[0])
+                            })
+                            Spacer()
+                            Text("시간 선택")
+                                .fontDesign(.rounded)
+                                .bold()
+                                .foregroundStyle(ClockColor[0])
+                                .font(.title3)
+                            Spacer()
+                            Button(action: {
+                                self.timeSet = false
+                                self.degree = Double(self.TimeHour * 3600 + self.TimeMin * 60 + self.TimeSec)
+                                var results = ""
+                                if self.degree < 3600 {
+                                    results = "\(String(format:"%02d", self.TimeMin)) : \(String(format:"%02d", self.TimeSec))"
+                                } else {
+                                    results = "\(String(format:"%02d",self.TimeHour)) : \(String(format:"%02d",self.TimeMin)) : \(String(format:"%02d",self.TimeSec))"
+                                }
+                                timers.timeString = results
+                            }, label: {
+                                Text("확인")
+                                //.frame(width: 30, height: 20)
+                                    .padding(7)
+                                    .foregroundStyle(ClockColor[0])
+                            })
+                            //.buttonStyle(.borderedProminent)
+                            .tint(.clear)
+                            //.frame(width: 40, height: 25)
+                            //.padding(.horizontal)
+                            .border(ClockColor[0], width: 2.5)
+                            .padding()
+                        }
+                        HStack{
+                            Picker(selection: $TimeHour) {
+                                ForEach(0..<24){ i in
+                                    Text("\(i)")
+                                }
+                                .foregroundStyle(ClockColor[0])
+                            } label: {
+                                Text("사간 선택")
+                            }
+                            .pickerStyle(.wheel)
+                            .presentationDetents([.fraction(0.4)])
+                            Text(":")
+                            Picker(selection: $TimeMin) {
+                                ForEach(0..<60){ i in
+                                    Text("\(i)")
+                                }
+                                .foregroundStyle(ClockColor[0])
+                            } label: {
+                                Text("사간 선택")
+                            }
+                            .pickerStyle(.wheel)
+                            Text(":")
+                            Picker(selection: $TimeSec) {
+                                ForEach(0..<60){ i in
+                                    Text("\(i)")
+                                }
+                                .foregroundStyle(ClockColor[0])
+                            } label: {
+                                Text("사간 선택")
+                            }
+                            .pickerStyle(.wheel)
+                        }
+                    }
+                })
+            }
+            Text(timers.timeString)
+                .font(.largeTitle)
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                .fontDesign(.rounded)
+                .foregroundStyle(ClockColor[0])
+        }
+        
+    }
+    
+}
+
+//MARK: Fuctions 집합
+extension Home {
     
     private func loadSubjectArray() {
         let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -228,347 +615,6 @@ struct Home: View {
             }
         }
     }
-    
-    //MARK: - 바디 뷰
-    var body: some View {
-        ZStack{
-            self.functions
-            GeometryReader{ geometry in
-                ZStack{}.onAppear() {
-                    self.scHeight = geometry.size.height
-                    self.scWidth = geometry.size.width
-                    self.clockSize = scWidth > scHeight ? self.scHeight : self.scWidth
-                    self.clockSize = self.clockSize/6
-                }
-                .background(self.over ? .black : .clear)
-            }
-            VStack{
-                Toggle("화면 항상 켜기", isOn: $AOD)
-                //.foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
-                    .tint(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
-                    .padding()
-                Spacer()
-                Button(action: {
-                    self.SelSubject.toggle()
-                }, label: {
-                    HStack{
-                        Text(self.selectedSub)
-                            .fontDesign(.rounded)
-                            .font(.largeTitle)
-                            .bold()
-                            .foregroundStyle(self.selectedSub == "과목을 선택하세요" ? .gray : .black)
-                        if !self.pauses {
-                            Button{
-                                TimeOver()
-                            } label: {
-                                Image(systemName: "stop.fill")
-                                    .font(.title)
-                                    .foregroundStyle(ClockColor[0])
-                            }
-                        }
-                    }
-                })
-                .sheet(isPresented: self.$SelSubject, content: {
-                    if !makeSub {
-                        Picker(selection: $selectedSub) {
-                            ForEach(self.subjects, id: \.self) {
-                                Text($0).tag($0)
-                            }
-                            Text("토익").tag("토익")
-                            Text("오픽").tag("오픽")
-                            
-                        } label: {
-                            Text("과목선택")
-                        }
-                        .pickerStyle(.wheel)
-                        .presentationDetents([.fraction(0.4)])
-                        .onAppear() {
-                            // 과목 선택 sheet 올라올 때 과목 선택 바로 반영
-                            if self.selectedSub == "과목을 선택하세요" {
-                                if self.subjects.count != 0 {
-                                    self.selectedSub = self.subjects.first! //과목 목록이 있으면 첫 요소로 선택
-                                    //timers.subject = self.selectedSub
-                                } else {
-                                    self.selectedSub = "토익" // 없으면 토익으로
-                                    //timers.subject = self.selectedSub
-                                }
-                            }
-                        }
-                        Button {
-                            self.makeSub = true
-                        } label: {
-                            HStack{
-                                Spacer()
-                                Text("과목 추가하기")
-                                    .foregroundStyle(ClockColor[0])
-                                    .padding(8)
-                                Spacer()
-                            }
-                            
-                            .background() {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(lineWidth: 2.0)
-                                    .foregroundStyle(ClockColor[0])
-                            }
-                            .padding(.horizontal)
-                        }
-                        .padding(.vertical,5)
-                        Button {
-                            self.SelSubject = false
-                        } label: {
-                            HStack{
-                                Spacer()
-                                Text("확인")
-                                    .foregroundStyle(.white)
-                                    .padding(10)
-                                Spacer()
-                            }
-                            .background() {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .foregroundStyle(ClockColor[0])
-                            }
-                            .padding(.horizontal)
-                        }
-                    } else {
-                        VStack{
-                            Text("추가하실 과목을 입력해주세요.")
-                                .padding()
-                                .font(.title2)
-                                .frame(height: 50)
-                                .foregroundStyle(ClockColor[0])
-                                .presentationDetents([.fraction(0.2)])
-                            TextField("과목 입력", text: $addedSub)
-                                .padding(6)
-                                .background(.gray.opacity(0.3))
-                                .cornerRadius(10)
-                                .padding(.horizontal)
-                            Button{
-                                self.subjects.append(self.addedSub)
-                                self.makeSub = false
-                                saveSubjectArray()
-                                self.selectedSub = self.addedSub
-                                self.addedSub = ""
-                            } label: {
-                                HStack{
-                                    Spacer()
-                                    Text("확인")
-                                        .foregroundStyle(.white)
-                                        .padding(10)
-                                    Spacer()
-                                }
-                                .background() {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .foregroundStyle(ClockColor[0])
-                                }
-                                .padding(.horizontal)
-                            }
-                            Spacer()
-                        }
-                    }
-                })
-                .onAppear(){
-                    if self.subjects == [] {
-                        self.loadSubjectArray()
-                    }
-                }
-                ZStack{
-                    Circle()
-                        .frame(width: self.clockSize*4)
-                        .foregroundColor(ClockColor[self.colorNumber])
-                    Image("clock_num")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: self.clockSize * 5.2, height: self.clockSize * 5.2)
-                        .foregroundColor(.black)
-                    TimerView(degrees: (degree.truncatingRemainder(dividingBy: 3600)-timers.value)/10)
-                        .stroke(lineWidth: self.clockSize*2)
-                        .frame(width: self.clockSize, height: self.clockSize)
-                        .rotationEffect(.degrees(270))
-                        .foregroundStyle(ClockColor[self.colorNumber-1])
-                        .shadow(radius: 5)
-                        .onChange(of: phase) { phaseStatus in
-                            if phaseStatus == .background {
-                                timers.backProcess()
-                            } else {
-                                timers.backgroundTime()
-                            }
-                        }
-                    knob
-                    ZStack{
-                        Circle()
-                            .foregroundStyle(.white)
-                            .frame(width: self.clockSize)
-                            .shadow(radius: 7)
-                        Triangle()
-                            .frame(width: self.clockSize/3, height: self.clockSize/3)
-                            .padding(.bottom , self.clockSize*1.2)
-                            .foregroundColor(.white)
-                            .rotationEffect(Angle(degrees: -(degree-timers.value)/10))
-                            .shadow(radius: 7)
-                        Circle()
-                            .foregroundStyle(.white)
-                            .frame(width: self.clockSize)
-                        //.shadow(radius: 7)
-                        Button{
-                            if self.selectedSub == "과목을 선택하세요" {
-                                self.sujectAlert = true
-                                return
-                            }
-                            if self.pauses {
-                                timers.SettingDegree = self.degree
-                                timers.start()
-                                self.over = false
-                            } else {
-                                timers.stop()
-                            }
-                            self.pauses.toggle()
-                        } label: {
-                            Image(systemName: self.pauses ? "play.fill" :"pause.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: self.clockSize*0.5, height: self.clockSize*0.5)
-                                .padding(.leading, self.pauses ? self.clockSize/14 : 0)
-                                .foregroundColor(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
-                        }
-                        .alert("과목윽 선택하세요!", isPresented: $sujectAlert) {
-                            Text("확인")
-                                .tint(ClockColor[0])
-                        } message: {
-                            Text("과목을 선택하지 않으면 타이머가 작동하지 않습니다.")
-                        }
-
-                        
-                    }
-                    //.shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-                    
-                }
-                Spacer()
-                self.timeSelection
-                // String(format: "%.f",floor(((degree - timers.value))/60.0))):\(String(format:"%02.f",(degree-timers.value).truncatingRemainder(dividingBy: 60))
-                //Text(String(Int(degree.truncatingRemainder(dividingBy: 3600))))
-                Spacer()
-            }
-        }
-    }
-    
-    var knob: some View {
-        Circle()
-            .foregroundStyle(.white)
-            .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-            .frame(width: clockSize*0.4, height: clockSize*0.4)
-            .offset(y: -clockSize*2)
-            .rotationEffect(.degrees(self.settingAngle))
-            .gesture(DragGesture().onChanged({ dot in
-                if degree >= 0 {
-                    change(location: dot.location)
-                    checkHour(location: dot.location)
-                } else {
-                    degree = 0.0
-                }
-            }))
-            .opacity(self.over ? 1.0 : 0.0)
-    }
-    
-    var timeSelection: some View {
-        VStack{
-            if !self.pauses {
-                
-            } else {
-                Button(action: {
-                    self.timeSet.toggle()
-                }, label: {
-                    Text("시간 설정")
-                        .foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
-                        .padding(.horizontal, 20)
-                })
-                .sheet(isPresented: $timeSet, content: {
-                    VStack{
-                        HStack{
-                            Button(action: {
-                                self.timeSet = false
-                            }, label: {
-                                Image(systemName: "x.square")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 30, height: 30)
-                                    .padding()
-                                    .foregroundStyle(ClockColor[0])
-                            })
-                            Spacer()
-                            Text("시간 선택")
-                                .fontDesign(.rounded)
-                                .bold()
-                                .foregroundStyle(ClockColor[0])
-                                .font(.title3)
-                            Spacer()
-                            Button(action: {
-                                self.timeSet = false
-                                self.degree = Double(self.TimeHour * 3600 + self.TimeMin * 60 + self.TimeSec)
-                                var results = ""
-                                if self.degree < 3600 {
-                                    results = "\(String(format:"%02d", self.TimeMin)) : \(String(format:"%02d", self.TimeSec))"
-                                } else {
-                                    results = "\(String(format:"%02d",self.TimeHour)) : \(String(format:"%02d",self.TimeMin)) : \(String(format:"%02d",self.TimeSec))"
-                                }
-                                timers.timeString = results
-                            }, label: {
-                                Text("확인")
-                                //.frame(width: 30, height: 20)
-                                    .padding(7)
-                                    .foregroundStyle(ClockColor[0])
-                            })
-                            //.buttonStyle(.borderedProminent)
-                            .tint(.clear)
-                            //.frame(width: 40, height: 25)
-                            //.padding(.horizontal)
-                            .border(ClockColor[0], width: 2.5)
-                            .padding()
-                        }
-                        HStack{
-                            Picker(selection: $TimeHour) {
-                                ForEach(0..<24){ i in
-                                    Text("\(i)")
-                                }
-                                .foregroundStyle(ClockColor[0])
-                            } label: {
-                                Text("사간 선택")
-                            }
-                            .pickerStyle(.wheel)
-                            .presentationDetents([.fraction(0.4)])
-                            Text(":")
-                            Picker(selection: $TimeMin) {
-                                ForEach(0..<60){ i in
-                                    Text("\(i)")
-                                }
-                                .foregroundStyle(ClockColor[0])
-                            } label: {
-                                Text("사간 선택")
-                            }
-                            .pickerStyle(.wheel)
-                            Text(":")
-                            Picker(selection: $TimeSec) {
-                                ForEach(0..<60){ i in
-                                    Text("\(i)")
-                                }
-                                .foregroundStyle(ClockColor[0])
-                            } label: {
-                                Text("사간 선택")
-                            }
-                            .pickerStyle(.wheel)
-                        }
-                    }
-                })
-            }
-            Text(timers.timeString)
-                .font(.largeTitle)
-                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                .fontDesign(.rounded)
-                .foregroundStyle(ClockColor[0])
-            
-        }
-        
-    }
-    
 }
 
 #Preview {

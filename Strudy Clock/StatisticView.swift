@@ -19,6 +19,7 @@ struct StatisticView: View {
     @State var scHeight = 0.0
     
     var body: some View {
+        let columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
         ZStack{
             GeometryReader { geometry in
                 ZStack{}.onAppear() {
@@ -28,40 +29,61 @@ struct StatisticView: View {
             }
             ScrollView{
                 VStack{
-                    Text("주간 공부 시간")
-                        .onAppear(){
-                            loadData()
-                            loadSubjectArray()
-                        }
                     if self.data != nil {
-                        Chart(self.sevenTimeData, id: \.self) { time in
-                            AreaMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/60))
-                                .foregroundStyle(
-                                    LinearGradient(colors: [ClockColor[0].opacity(0.5), ClockColor[0].opacity(0.05)], startPoint: .top, endPoint: .bottom)
+                        VStack{
+                            Text("주간 공부 시간")
+                            Chart(self.sevenTimeData, id: \.self) { time in
+                                AreaMark(
+                                    x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), 
+                                    y: .value("Time", time.totalTime/60)
                                 )
-                            PointMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/60))
-                                .foregroundStyle(ClockColor[0])
-                            LineMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/60))
-                                .foregroundStyle(ClockColor[0])
-                        }
-                        .frame(width: self.scWidth < self.scHeight ? self.scWidth : self.scHeight - 50, height: self.scWidth < self.scHeight ? self.scWidth/3 : self.scHeight/3)
-                        ForEach(self.subjects, id: \.self) { sub in
-                            Text(sub)
-                            Chart(self.data!.data, id: \.self) { data in
-                                //var selectedSub = data.subject.filter({$0.subject == sub}).first?.time ?? 0.0
-                                AreaMark(x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day), y: .value("Time", data.subject.filter({$0.subject == sub}).first?.time ?? 0.0/60))
                                     .foregroundStyle(
                                         LinearGradient(colors: [ClockColor[0].opacity(0.5), ClockColor[0].opacity(0.05)], startPoint: .top, endPoint: .bottom)
                                     )
-                                PointMark(x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day), y: .value("Time", data.subject.filter({$0.subject == sub}).first?.time ?? 0.0/60))
+                                PointMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/60))
                                     .foregroundStyle(ClockColor[0])
-                                LineMark(x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day), y: .value("Time", data.subject.filter({$0.subject == sub}).first?.time ?? 0.0/60))
+                                LineMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/60))
                                     .foregroundStyle(ClockColor[0])
                             }
-                            .frame(width: self.scWidth < self.scHeight ? self.scWidth : self.scHeight - 50, height: self.scWidth < self.scHeight ? self.scWidth/3 : self.scHeight/3)
                         }
+                        .frame(width: self.scWidth < self.scHeight ? self.scWidth : self.scHeight - 50, height: self.scWidth < self.scHeight ? self.scWidth/3 : self.scHeight/3)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundStyle(.white)
+                                .shadow(radius: 10)
+                        )
+                        LazyVGrid(columns: columns, content: {
+                            ForEach(self.subjects, id: \.self) { sub in
+                                VStack{
+                                    Text(sub)
+                                    Chart(self.sevenTimeData, id: \.self) { data in
+                                        AreaMark(
+                                            x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day),
+                                            y: .value("Time", data.subject.filter({$0.subject == sub}).first?.time ?? 0.0/60)
+                                        )
+                                            .foregroundStyle(
+                                                LinearGradient(colors: [ClockColor[0].opacity(0.5), ClockColor[0].opacity(0.05)], startPoint: .top, endPoint: .bottom)
+                                            )
+                                        PointMark(x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day), y: .value("Time", data.subject.filter({$0.subject == sub}).first?.time ?? 0.0/60))
+                                            .foregroundStyle(ClockColor[0])
+                                        LineMark(x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day), y: .value("Time", data.subject.filter({$0.subject == sub}).first?.time ?? 0.0/60))
+                                            .foregroundStyle(ClockColor[0])
+                                    }
+                                }
+                                .frame(width: self.scWidth < self.scHeight ? self.scWidth/2 - 30 : (self.scHeight - 50)/2 - 30, height: self.scWidth < self.scHeight ? self.scWidth/2 - 30 : self.scHeight/2 - 10)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .foregroundStyle(.white)
+                                        .shadow(radius: 10)
+                                )
+                            }
+                        })
                     }
                     Spacer()
+                }
+                .onAppear(){
+                    loadData()
+                    loadSubjectArray()
                 }
             }
         }
