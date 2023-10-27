@@ -120,6 +120,7 @@ struct Home: View {
             }
         }
     }
+    
     private func checkHour(location: CGPoint) {
         if self.pauses {
             if location.x < 0 && self.oldLocation.x > 0 && location.y < 0 {
@@ -250,11 +251,22 @@ struct Home: View {
                 Button(action: {
                     self.SelSubject.toggle()
                 }, label: {
-                    Text(self.selectedSub)
-                        .fontDesign(.rounded)
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundStyle(self.selectedSub == "과목을 선택하세요" ? .gray : .black)
+                    HStack{
+                        Text(self.selectedSub)
+                            .fontDesign(.rounded)
+                            .font(.largeTitle)
+                            .bold()
+                            .foregroundStyle(self.selectedSub == "과목을 선택하세요" ? .gray : .black)
+                        if !self.pauses {
+                            Button{
+                                TimeOver()
+                            } label: {
+                                Image(systemName: "stop.fill")
+                                    .font(.title)
+                                    .foregroundStyle(ClockColor[0])
+                            }
+                        }
+                    }
                 })
                 .sheet(isPresented: self.$SelSubject, content: {
                     if !makeSub {
@@ -459,96 +471,102 @@ struct Home: View {
     
     var timeSelection: some View {
         VStack{
-            Button(action: {
-                self.timeSet.toggle()
-            }, label: {
-                Text("시간 설정")
-                    .foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
-                    .padding(.horizontal, 20)
-            })
-            .sheet(isPresented: $timeSet, content: {
-                VStack{
-                    HStack{
-                        Button(action: {
-                            self.timeSet = false
-                        }, label: {
-                            Image(systemName: "x.square")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 30, height: 30)
-                                .padding()
+            if !self.pauses {
+                
+            } else {
+                Button(action: {
+                    self.timeSet.toggle()
+                }, label: {
+                    Text("시간 설정")
+                        .foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
+                        .padding(.horizontal, 20)
+                })
+                .sheet(isPresented: $timeSet, content: {
+                    VStack{
+                        HStack{
+                            Button(action: {
+                                self.timeSet = false
+                            }, label: {
+                                Image(systemName: "x.square")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .padding()
+                                    .foregroundStyle(ClockColor[0])
+                            })
+                            Spacer()
+                            Text("시간 선택")
+                                .fontDesign(.rounded)
+                                .bold()
                                 .foregroundStyle(ClockColor[0])
-                        })
-                        Spacer()
-                        Text("시간 선택")
-                            .fontDesign(.rounded)
-                            .bold()
-                            .foregroundStyle(ClockColor[0])
-                            .font(.title3)
-                        Spacer()
-                        Button(action: {
-                            self.timeSet = false
-                            self.degree = Double(self.TimeHour * 3600 + self.TimeMin * 60 + self.TimeSec)
-                            var results = ""
-                            if self.degree < 3600 {
-                                results = "\(String(format:"%02d", self.TimeMin)) : \(String(format:"%02d", self.TimeSec))"
-                            } else {
-                                results = "\(String(format:"%02d",self.TimeHour)) : \(String(format:"%02d",self.TimeMin)) : \(String(format:"%02d",self.TimeSec))"
-                            }
-                            timers.timeString = results
-                        }, label: {
-                            Text("확인")
+                                .font(.title3)
+                            Spacer()
+                            Button(action: {
+                                self.timeSet = false
+                                self.degree = Double(self.TimeHour * 3600 + self.TimeMin * 60 + self.TimeSec)
+                                var results = ""
+                                if self.degree < 3600 {
+                                    results = "\(String(format:"%02d", self.TimeMin)) : \(String(format:"%02d", self.TimeSec))"
+                                } else {
+                                    results = "\(String(format:"%02d",self.TimeHour)) : \(String(format:"%02d",self.TimeMin)) : \(String(format:"%02d",self.TimeSec))"
+                                }
+                                timers.timeString = results
+                            }, label: {
+                                Text("확인")
                                 //.frame(width: 30, height: 20)
-                                .padding(7)
+                                    .padding(7)
+                                    .foregroundStyle(ClockColor[0])
+                            })
+                            //.buttonStyle(.borderedProminent)
+                            .tint(.clear)
+                            //.frame(width: 40, height: 25)
+                            //.padding(.horizontal)
+                            .border(ClockColor[0], width: 2.5)
+                            .padding()
+                        }
+                        HStack{
+                            Picker(selection: $TimeHour) {
+                                ForEach(0..<24){ i in
+                                    Text("\(i)")
+                                }
                                 .foregroundStyle(ClockColor[0])
-                        })
-                        //.buttonStyle(.borderedProminent)
-                        .tint(.clear)
-                        //.frame(width: 40, height: 25)
-                        //.padding(.horizontal)
-                        .border(ClockColor[0], width: 2.5)
-                        .padding()
+                            } label: {
+                                Text("사간 선택")
+                            }
+                            .pickerStyle(.wheel)
+                            .presentationDetents([.fraction(0.4)])
+                            Text(":")
+                            Picker(selection: $TimeMin) {
+                                ForEach(0..<60){ i in
+                                    Text("\(i)")
+                                }
+                                .foregroundStyle(ClockColor[0])
+                            } label: {
+                                Text("사간 선택")
+                            }
+                            .pickerStyle(.wheel)
+                            Text(":")
+                            Picker(selection: $TimeSec) {
+                                ForEach(0..<60){ i in
+                                    Text("\(i)")
+                                }
+                                .foregroundStyle(ClockColor[0])
+                            } label: {
+                                Text("사간 선택")
+                            }
+                            .pickerStyle(.wheel)
+                        }
                     }
-                    HStack{
-                        Picker(selection: $TimeHour) {
-                            ForEach(0..<24){ i in
-                                Text("\(i)")
-                            }
-                            .foregroundStyle(ClockColor[0])
-                        } label: {
-                            Text("사간 선택")
-                        }
-                        .pickerStyle(.wheel)
-                        .presentationDetents([.fraction(0.4)])
-                        Text(":")
-                        Picker(selection: $TimeMin) {
-                            ForEach(0..<60){ i in
-                                Text("\(i)")
-                            }
-                            .foregroundStyle(ClockColor[0])
-                        } label: {
-                            Text("사간 선택")
-                        }
-                        .pickerStyle(.wheel)
-                        Text(":")
-                        Picker(selection: $TimeSec) {
-                            ForEach(0..<60){ i in
-                                Text("\(i)")
-                            }
-                            .foregroundStyle(ClockColor[0])
-                        } label: {
-                            Text("사간 선택")
-                        }
-                        .pickerStyle(.wheel)
-                    }
-                }
-            })
+                })
+            }
             Text(timers.timeString)
                 .font(.largeTitle)
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 .fontDesign(.rounded)
-                .foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
+                .foregroundStyle(ClockColor[0])
+            
         }
+        
     }
     
 }

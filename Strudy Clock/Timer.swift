@@ -105,6 +105,7 @@ extension Timers {
         self.SettingDegree = 0.0
         //self.timeString = "00:00"
         self.value = 0.0
+        self.timeString = "00:00"
     }
 }
 
