@@ -8,39 +8,6 @@
 import SwiftUI
 import AVKit
 
-var ClockColor = [
-    Color(red: 216/255, green: 63/255, blue: 49/255),
-    Color.gray,
-    Color(red: 255/255, green: 183/255, blue: 183/255),
-    Color(red: 150/255, green: 194/255, blue: 145/255),
-    Color(red: 30/255, green: 178/255, blue: 166/255),
-    Color(red: 212/255, green: 248/255, blue: 232/255),
-    Color(red: 255/255, green: 163/255, blue: 77/255),
-    Color(red: 246/255, green: 117/255, blue: 117/255),
-    Color(red: 255/255, green: 235/255, blue: 235/255),
-    Color(red: 173/255, green: 228/255, blue: 219/255),
-    Color(red: 109/255, green: 169/255, blue: 228/255),
-    Color(red: 246/255, green: 186/255, blue: 111/255),
-    Color(red: 24/255, green: 111/255, blue: 101/255),
-    Color(red: 181/255, green: 203/255, blue: 153/255),
-    Color(red: 252/255, green: 224/255, blue: 155/255),
-    Color(red: 178/255, green: 83/255, blue: 62/255),
-    Color(red: 255/255, green: 245/255, blue: 224/255),
-    Color(red: 255/255, green: 105/255, blue: 105/255),
-    Color(red: 199/255, green: 0/255, blue: 57/255),
-    Color(red: 20/255, green: 30/255, blue: 70/255),
-    Color(red: 33/255, green: 156/255, blue: 144/255),
-    Color(red: 233/255, green: 184/255, blue: 36/255),
-    Color(red: 238/255, green: 147/255, blue: 34/255),
-    Color(red: 216/255, green: 63/255, blue: 49/255),
-    Color.white
-]
-
-enum Times {
-    case Hour
-    case Minute
-    case Second
-}
 
 struct Home: View {
     
@@ -91,6 +58,8 @@ struct Home: View {
                     self.scWidth = geometry.size.width
                     self.clockSize = scWidth > scHeight ? self.scHeight : self.scWidth
                     self.clockSize = self.clockSize/6
+                    self.loadSubjectArray()
+                    self.saveSubjectArray()
                 }
                 .onChange(of: geometry.size) { _ in
                     self.scHeight = geometry.size.height
@@ -98,13 +67,6 @@ struct Home: View {
                     self.clockSize = scWidth > scHeight ? self.scHeight : self.scWidth
                     self.clockSize = self.clockSize/6
                 }
-//                .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification), perform: { _ in
-//                    self.scHeight = geometry.size.height
-//                    self.scWidth = geometry.size.width
-//                    self.clockSize = scWidth > scHeight ? self.scHeight : self.scWidth
-//                    self.clockSize = self.clockSize/6
-//                })
-                //.border(.red)
             }
             HStack{
                 if self.scWidth > self.scHeight {
@@ -124,7 +86,7 @@ struct Home: View {
                                 .fontDesign(.rounded)
                                 .font(.largeTitle)
                                 .bold()
-                                .foregroundStyle(self.selectedSub == "과목을 선택하세요" ? .gray : .black)
+                                .foregroundStyle(self.selectedSub == "과목을 선택하세요" ? .gray : self.colorScheme == .dark ? Color.white : Color.black)
                             if !self.pauses {
                                 Button{
                                     TimeOver()
@@ -166,7 +128,6 @@ extension Home {
     
     var clockView: some View {
         Group{
-            
             ZStack{
                 Circle()
                     .frame(width: self.clockSize*4)
@@ -176,6 +137,7 @@ extension Home {
                     .scaledToFit()
                     .frame(width: self.clockSize * 5.2, height: self.clockSize * 5.2)
                     .foregroundColor(self.colorScheme == .dark ? .white : .black)
+                
                 TimerView(degrees: (degree.truncatingRemainder(dividingBy: 3600)-timers.value)/10)
                     .stroke(lineWidth: self.clockSize*2)
                     .frame(width: self.clockSize, height: self.clockSize)
@@ -214,7 +176,7 @@ extension Home {
                             timers.start()
                             self.over = false
                         } else {
-                            timers.stop()
+                            timers.Pause()
                         }
                         self.pauses.toggle()
                     } label: {
@@ -246,8 +208,6 @@ extension Home {
                     ForEach(self.subjects, id: \.self) {
                         Text($0).tag($0)
                     }
-                    Text("토익").tag("토익")
-                    Text("오픽").tag("오픽")
                     
                 } label: {
                     Text("과목선택")
@@ -471,7 +431,7 @@ extension Home {
             guard let myData = try? decoder.decode([String].self, from: js as Data) else {print("subject Data not found!"); return}
             self.subjects = myData
         } else {
-            self.subjects = []
+            self.subjects = ["토익", "오픽"]
         }
     }
     
@@ -560,6 +520,13 @@ extension Home {
         }
     }
     
+    func TimePause() {
+        timers.SaveData(subjectOfTimer: self.selectedSub)
+        self.over = true
+        timers.Pause()
+        self.pauses = true
+    }
+    
     func secondsToHoursMinutesSeconds(_ seconds: Int = 0) -> String {
         let timeDict: [Times : Int] = [.Hour : seconds / 3600, .Minute : (seconds % 3600) / 60, .Second : (seconds % 3600) % 60 ]
         var results = ""
@@ -615,6 +582,42 @@ extension Home {
             }
         }
     }
+}
+
+
+
+var ClockColor = [
+    Color(red: 216/255, green: 63/255, blue: 49/255),
+    Color.gray,
+    Color(red: 255/255, green: 183/255, blue: 183/255),
+    Color(red: 150/255, green: 194/255, blue: 145/255),
+    Color(red: 30/255, green: 178/255, blue: 166/255),
+    Color(red: 212/255, green: 248/255, blue: 232/255),
+    Color(red: 255/255, green: 163/255, blue: 77/255),
+    Color(red: 246/255, green: 117/255, blue: 117/255),
+    Color(red: 255/255, green: 235/255, blue: 235/255),
+    Color(red: 173/255, green: 228/255, blue: 219/255),
+    Color(red: 109/255, green: 169/255, blue: 228/255),
+    Color(red: 246/255, green: 186/255, blue: 111/255),
+    Color(red: 24/255, green: 111/255, blue: 101/255),
+    Color(red: 181/255, green: 203/255, blue: 153/255),
+    Color(red: 252/255, green: 224/255, blue: 155/255),
+    Color(red: 178/255, green: 83/255, blue: 62/255),
+    Color(red: 255/255, green: 245/255, blue: 224/255),
+    Color(red: 255/255, green: 105/255, blue: 105/255),
+    Color(red: 199/255, green: 0/255, blue: 57/255),
+    Color(red: 20/255, green: 30/255, blue: 70/255),
+    Color(red: 33/255, green: 156/255, blue: 144/255),
+    Color(red: 233/255, green: 184/255, blue: 36/255),
+    Color(red: 238/255, green: 147/255, blue: 34/255),
+    Color(red: 216/255, green: 63/255, blue: 49/255),
+    Color.clear
+]
+
+enum Times {
+    case Hour
+    case Minute
+    case Second
 }
 
 #Preview {

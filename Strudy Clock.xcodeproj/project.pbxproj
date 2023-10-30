@@ -21,6 +21,7 @@
 		034CA0492ADD523A00BDD28F /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CA0482ADD523A00BDD28F /* TimerView.swift */; };
 		034CA04B2ADE2E6000BDD28F /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CA04A2ADE2E6000BDD28F /* Timer.swift */; };
 		034CA04E2AE5ED8000BDD28F /* DecodeYaml.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CA04D2AE5ED8000BDD28F /* DecodeYaml.swift */; };
+		03807AC42AEF604300D51D89 /* graphViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03807AC32AEF604300D51D89 /* graphViewBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		034CA04A2ADE2E6000BDD28F /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		034CA04C2ADF527100BDD28F /* Strudy-Clock-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Strudy-Clock-Info.plist"; sourceTree = SOURCE_ROOT; };
 		034CA04D2AE5ED8000BDD28F /* DecodeYaml.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodeYaml.swift; sourceTree = "<group>"; };
+		03807AC32AEF604300D51D89 /* graphViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = graphViewBuilder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 				034CA0402ADD49D800BDD28F /* Home.swift */,
 				034CA0442ADD4A0400BDD28F /* SettingView.swift */,
 				034CA04D2AE5ED8000BDD28F /* DecodeYaml.swift */,
+				03807AC32AEF604300D51D89 /* graphViewBuilder.swift */,
 				0324672D2AE958EE00D2D19E /* README.md */,
 				034CA01A2ADD483800BDD28F /* Assets.xcassets */,
 				034CA01C2ADD483800BDD28F /* Preview Content */,
@@ -285,6 +288,7 @@
 				034CA0192ADD483700BDD28F /* ContentView.swift in Sources */,
 				034CA04E2AE5ED8000BDD28F /* DecodeYaml.swift in Sources */,
 				034CA04B2ADE2E6000BDD28F /* Timer.swift in Sources */,
+				03807AC42AEF604300D51D89 /* graphViewBuilder.swift in Sources */,
 				034CA0472ADD4A1F00BDD28F /* StatisticView.swift in Sources */,
 				034CA0452ADD4A0400BDD28F /* SettingView.swift in Sources */,
 				034CA0412ADD49D800BDD28F /* Home.swift in Sources */,

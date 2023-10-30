@@ -107,6 +107,14 @@ extension Timers {
         self.value = 0.0
         self.timeString = "00:00"
     }
+    
+    func Pause() {
+        timer?.cancel()
+        timer = nil
+        startTime = nil
+        isRunning = false
+    }
+    
 }
 
 extension Timers {

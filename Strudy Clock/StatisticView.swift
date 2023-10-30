@@ -18,66 +18,233 @@ struct StatisticView: View {
     @State var scWidth = 0.0
     @State var scHeight = 0.0
     
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
-        let columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
+        //let columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
         ZStack{
-            GeometryReader { geometry in
-                ZStack{}.onAppear() {
+            GeometryReader{ geometry in
+                ZStack{Spacer()}.onAppear() {
                     self.scHeight = geometry.size.height
                     self.scWidth = geometry.size.width
+                    //print(geometry.size.height)
                 }
+                .onChange(of: geometry.size) { _ in
+                    self.scHeight = geometry.size.height
+                    self.scWidth = geometry.size.width
+                    print(geometry.size.height)
+                    print(geometry.size.width)
+                    print("---------")
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification), perform: { _ in
+                    self.scHeight = 0
+                    self.scWidth = 0
+                })
             }
             ScrollView{
                 VStack{
+                    Text("공부 통계")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundStyle(ClockColor[0])
+                        .padding()
                     if self.data != nil {
                         VStack{
-                            Text("주간 공부 시간")
+                            HStack{
+                                Text("주간 공부 시간")
+                                    .bold()
+                                    .font(.title3)
+                                Spacer()
+                            }
+                            .padding(.horizontal)
                             Chart(self.sevenTimeData, id: \.self) { time in
-                                AreaMark(
-                                    x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), 
-                                    y: .value("Time", time.totalTime/60)
+                                PointMark(
+                                    x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day),
+                                    y: .value("Time", Int(time.totalTime/3600))
                                 )
-                                    .foregroundStyle(
-                                        LinearGradient(colors: [ClockColor[0].opacity(0.5), ClockColor[0].opacity(0.05)], startPoint: .top, endPoint: .bottom)
-                                    )
-                                PointMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/60))
+                                .foregroundStyle(
+                                    Color.clear
+                                )
+                                AreaMark(
+                                    x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day),
+                                    y: .value("Time", time.totalTime/3600)
+                                )
+                                .foregroundStyle(
+                                    LinearGradient(colors: [ClockColor[0].opacity(0.5), ClockColor[0].opacity(0.05)], startPoint: .top, endPoint: .bottom)
+                                )
+                                PointMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/3600))
                                     .foregroundStyle(ClockColor[0])
-                                LineMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/60))
+                                LineMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/3600))
                                     .foregroundStyle(ClockColor[0])
                             }
-                        }
-                        .frame(width: self.scWidth < self.scHeight ? self.scWidth : self.scHeight - 50, height: self.scWidth < self.scHeight ? self.scWidth/3 : self.scHeight/3)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .foregroundStyle(.white)
-                                .shadow(radius: 10)
-                        )
-                        LazyVGrid(columns: columns, content: {
-                            ForEach(self.subjects, id: \.self) { sub in
-                                VStack{
-                                    Text(sub)
-                                    Chart(self.sevenTimeData, id: \.self) { data in
-                                        AreaMark(
-                                            x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day),
-                                            y: .value("Time", data.subject.filter({$0.subject == sub}).first?.time ?? 0.0/60)
-                                        )
-                                            .foregroundStyle(
-                                                LinearGradient(colors: [ClockColor[0].opacity(0.5), ClockColor[0].opacity(0.05)], startPoint: .top, endPoint: .bottom)
-                                            )
-                                        PointMark(x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day), y: .value("Time", data.subject.filter({$0.subject == sub}).first?.time ?? 0.0/60))
-                                            .foregroundStyle(ClockColor[0])
-                                        LineMark(x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day), y: .value("Time", data.subject.filter({$0.subject == sub}).first?.time ?? 0.0/60))
-                                            .foregroundStyle(ClockColor[0])
+                            
+                            .frame(width: self.scWidth < self.scHeight ? self.scWidth*0.85 : self.scHeight, height: self.scWidth < self.scHeight ? self.scWidth*2/5 : self.scHeight*2/5)
+                            .chartYAxis {
+                                AxisMarks(values: .automatic(desiredCount: 3)) { value in
+                                    AxisGridLine(centered: true, stroke: StrokeStyle(lineWidth: 0.5))
+                                    AxisValueLabel() {
+                                        if let intValue = value.as(Int.self) {
+                                            Text("\(intValue) h")
+                                                .font(.system(size: 10))
+                                        }
                                     }
                                 }
-                                .frame(width: self.scWidth < self.scHeight ? self.scWidth/2 - 30 : (self.scHeight - 50)/2 - 30, height: self.scWidth < self.scHeight ? self.scWidth/2 - 30 : self.scHeight/2 - 10)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .foregroundStyle(.white)
-                                        .shadow(radius: 10)
-                                )
                             }
-                        })
+                            .chartXAxis {
+                                AxisMarks(values: .stride(by: .day, count: 2)) { value in
+                                    //AxisGridLine(centered: true, stroke: StrokeStyle(lineWidth: 0.0))
+                                    //AxisValueLabel(format: .dateTime.month().day())
+                                    //AxisValueLabel("    일", centered: false)
+                                    
+                                    if let date = value.as(Date.self) {
+                                        let month = Calendar.current.component(.month, from: date)
+                                        AxisValueLabel {
+                                            if value.index == 0 {
+                                                HStack(spacing: 5){
+                                                    HStack(alignment: .center, spacing: 0){
+                                                    Text("\(month)월")
+                                                    .font(.caption2)
+                                                    }
+                                                    HStack(alignment: .center, spacing: 0){
+                                                        Text(date, format: .dateTime.day())
+                                                        Text("일")
+                                                    }
+                                                }
+                                            } else {
+                                                HStack(alignment: .center, spacing: 0){
+                                                    Text(date, format: .dateTime.day())
+                                                    Text("일")
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        AxisValueLabel(format: .dateTime.month().day())
+                                        AxisValueLabel("    일", centered: false)
+                                    }
+                                    
+                                }
+                            }
+                            .padding()
+
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundStyle(self.colorScheme == .dark ? Color.black : Color.white)
+                                    .shadow(radius: 10)
+                            )
+                        }
+                        
+                        //LazyVGrid(columns: columns, content: {
+                        ForEach(self.subjects, id: \.self) { sub in
+                            HStack{
+                                VStack{
+                                    HStack{
+                                        Text(sub)
+                                            .fontWeight(.semibold)
+                                        Spacer()
+                                    }
+                                    Chart(self.sevenTimeData, id: \.self) { data in
+                                        PointMark(
+                                            x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day),
+                                            y: .value("Time", Int(data.subject.filter({$0.subject == sub}).first?.time ?? 0.0)/3600)
+                                        )
+                                        .foregroundStyle(Color.clear)
+                                        AreaMark(
+                                            x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day),
+                                            y: .value("Time", (data.subject.filter({$0.subject == sub}).first?.time ?? 0.0)/3600)
+                                        )
+                                        .foregroundStyle(
+                                            LinearGradient(colors: [ClockColor[0].opacity(0.5), ClockColor[0].opacity(0.05)], startPoint: .top, endPoint: .bottom)
+                                        )
+                                        PointMark(
+                                            x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day),
+                                            y: .value("Time", (data.subject.filter({$0.subject == sub}).first?.time ?? 0.0)/3600)
+                                        )
+                                        .foregroundStyle(ClockColor[0])
+                                        LineMark(
+                                            x: .value("Day", Calendar.current.date(from: data.date)!, unit: .day),
+                                            y: .value("Time", (data.subject.filter({$0.subject == sub}).first?.time ?? 0.0)/3600)
+                                        )
+                                        .foregroundStyle(ClockColor[0])
+                                        
+                                    }
+                                    .chartYAxis {
+                                        AxisMarks(values: .automatic(desiredCount: 3)) { value in
+                                            AxisGridLine(centered: true, stroke: StrokeStyle(lineWidth: 0.5))
+                                            AxisValueLabel() {
+                                                if let intValue = value.as(Int.self) {
+                                                    Text("\(intValue) h")
+                                                        .font(.system(size: 10))
+                                                }
+                                            }
+                                            AxisTick()
+                                        }
+                                    }
+                                    .chartXAxis {
+                                        AxisMarks(values: .stride(by: .day, count: 2)) { value in
+                                            //AxisGridLine(centered: true, stroke: StrokeStyle(lineWidth: 0.0))
+                                            //AxisValueLabel(format: .dateTime.month().day())
+                                            //AxisValueLabel("    일", centered: false)
+                                            
+                                            if let date = value.as(Date.self) {
+                                                //let month = Calendar.current.component(.month, from: date)
+                                                AxisValueLabel {
+                                                    if value.index == 0 {
+                                                        VStack{
+                                                            HStack(alignment: .center, spacing: 0){
+                                                                Text(date, format: .dateTime.day())
+                                                                Text("일")
+                                                            }
+                                                            /*
+                                                             HStack(alignment: .center, spacing: 0){
+                                                             Text("\(month)월")
+                                                             .font(.caption2)
+                                                             }
+                                                             */
+                                                        }
+                                                    } else {
+                                                        HStack(alignment: .center, spacing: 0){
+                                                            Text(date, format: .dateTime.day())
+                                                            Text("일")
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                AxisValueLabel(format: .dateTime.month().day())
+                                                AxisValueLabel("    일", centered: false)
+                                            }
+                                            
+                                        }
+                                    }
+                                    
+                                }
+                                .padding(10)
+                                .frame(width: self.scWidth < self.scHeight ? self.scWidth*0.45 : (self.scHeight)*0.45, height: self.scWidth < self.scHeight ? self.scWidth*0.45 : self.scHeight*0.45)
+                                .background{
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(lineWidth: 3.0)
+                                        .foregroundStyle(self.colorScheme == .dark ? ClockColor[0] : Color.white)
+                                        .shadow(radius: 5)
+                                }
+                                VStack{
+                                    Text("오늘 공부 시간")
+                                        .STime(data: self.sevenTimeData, sub: sub)
+                                        //.STime(time: self.sevenTimeData.last?.subject.filter{$0.subject == sub}.first?.time ?? 0.0)
+                                    /*
+                                    Text("이번주 평균 시간")
+                                        .STime(time: self.sevenTimeData.map{$0.subject}.flatMap{$0}.filter{$0.subject == sub}.map{$0.time}.reduce(0.0){$0 + $1} / 7.0)
+                                    Text("이번주 총 시간")
+                                        .STime(time: self.sevenTimeData.map{$0.subject}.flatMap{$0}.filter{$0.subject == sub}.map{$0.time}.reduce(0.0){$0 + $1})
+                                     */
+                                }
+                                .foregroundStyle(.white)
+                                .frame(width: self.scWidth < self.scHeight ? self.scWidth*0.45 : (self.scHeight)*0.45, height: self.scWidth < self.scHeight ? self.scWidth*0.45 : self.scHeight*0.45)
+                                .background{
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .foregroundStyle(ClockColor[0])
+                                        .shadow(radius: 5)
+                                }
+                            }
+                        }
                     }
                     Spacer()
                 }
@@ -86,6 +253,7 @@ struct StatisticView: View {
                     loadSubjectArray()
                 }
             }
+            .frame(width: self.scWidth > self.scHeight ? self.scWidth : self.scWidth, height: self.scHeight)
         }
     }
     
@@ -97,8 +265,6 @@ struct StatisticView: View {
             let decoder = JSONDecoder()
             guard let myData = try? decoder.decode([String].self, from: js as Data) else {print("subject Data not found!"); return}
             self.subjects = myData
-            self.subjects.append("토익")
-            self.subjects.append("오픽")
         } else {
             self.subjects = []
         }
@@ -112,8 +278,6 @@ struct StatisticView: View {
         let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: Calendar.current.date(from: dateComponent)!) ?? Date()
         self.sevenTimeData = allData.filter{Calendar.current.date(from: $0.date)!.compare(sevenDaysAgo) == .orderedDescending}
     }
-    
-    
     
     func loadData() {
         let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]

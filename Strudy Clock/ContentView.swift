@@ -25,7 +25,7 @@ struct ContentView: View {
             SettingView().tag(TabIndex.Setting)
         })
         .tabViewStyle(.page)
-        .preferredColorScheme(.light)
+        .preferredColorScheme(.dark)
     }
 }
 
