@@ -44,7 +44,7 @@ struct Home: View {
     @Environment(\.colorScheme) var colorScheme
     
     @State var player: AVAudioPlayer?
-    
+    @AppStorage("KEY") var selectedBell: String = "cow-bells"
     
     
     
@@ -359,6 +359,8 @@ extension Home {
                                 } else {
                                     results = "\(String(format:"%02d",self.TimeHour)) : \(String(format:"%02d",self.TimeMin)) : \(String(format:"%02d",self.TimeSec))"
                                 }
+                                //self.degree = 3600 * self.settingHour - angle * 10
+                                self.settingAngle = -(self.degree - self.settingHour * 3600) / 10
                                 timers.timeString = results
                             }, label: {
                                 Text("확인")
@@ -512,7 +514,7 @@ extension Home {
         self.degree = 0.0
         self.settingAngle = 0.0
         do {
-            let asset = NSDataAsset(name: "cow-bells")
+            let asset = NSDataAsset(name: self.selectedBell)
             player = try AVAudioPlayer(data:asset!.data, fileTypeHint:"wav")
             player?.play()
         } catch {

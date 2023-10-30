@@ -222,8 +222,7 @@ struct StatisticView: View {
                                 .background{
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(lineWidth: 3.0)
-                                        .foregroundStyle(self.colorScheme == .dark ? ClockColor[0] : Color.white)
-                                        .shadow(radius: 5)
+                                        .foregroundStyle(self.colorScheme == .dark ? ClockColor[0] : ClockColor[0])
                                 }
                                 VStack{
                                     Text("오늘 공부 시간")
