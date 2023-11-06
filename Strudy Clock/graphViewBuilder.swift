@@ -9,7 +9,7 @@ import SwiftUI
 
 struct graphViewBuilder: ViewModifier {
     
-    @State var timeData: [YamlData]
+    @Binding var timeData: [YamlData]
     @State var sub: String
     @State var timeString = ""
     
@@ -34,6 +34,7 @@ struct graphViewBuilder: ViewModifier {
                     .font(.title3)
                     .onAppear(){
                         let timeWant = timeData.last?.subject.filter{$0.subject == sub}.first?.time ?? 0.0
+                        //print("timeWant: \(timeWant)")
                         self.timeString = secondsToHoursMinutesSeconds(Int(timeWant))
                     }
                 Text(self.timeString)
@@ -92,7 +93,7 @@ struct graphViewBuilder: ViewModifier {
 }
 
 extension View {
-    func STime(data: [YamlData], sub: String) -> some View {
+    func STime(data: Binding<[YamlData]>, sub: String) -> some View {
         self.modifier(graphViewBuilder(timeData: data, sub: sub))
     }
 }

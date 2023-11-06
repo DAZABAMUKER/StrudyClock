@@ -231,7 +231,7 @@ struct StatisticView: View {
                                         }
                                         VStack{
                                             Text("오늘 공부 시간")
-                                                .STime(data: self.sevenTimeData, sub: sub)
+                                                .STime(data: self.$sevenTimeData, sub: sub)
                                             //.STime(time: self.sevenTimeData.last?.subject.filter{$0.subject == sub}.first?.time ?? 0.0)
                                             /*
                                              Text("이번주 평균 시간")
@@ -343,7 +343,7 @@ struct StatisticView: View {
                                     }
                                     VStack{
                                         Text("오늘 공부 시간")
-                                            .STime(data: self.sevenTimeData, sub: sub)
+                                            .STime(data: self.$sevenTimeData, sub: sub)
                                         //.STime(time: self.sevenTimeData.last?.subject.filter{$0.subject == sub}.first?.time ?? 0.0)
                                         /*
                                          Text("이번주 평균 시간")
