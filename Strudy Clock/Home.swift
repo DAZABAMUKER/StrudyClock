@@ -46,6 +46,8 @@ struct Home: View {
     @State var player: AVAudioPlayer?
     @AppStorage("KEY") var selectedBell: String = "cow-bells"
     
+    private let adCoordinator = AdCoordinator()
+    private let adViewControllerRepresentable = AdViewControllerRepresentable()
     
     
     //MARK: - 바디 뷰
@@ -99,14 +101,14 @@ struct Home: View {
                         }
                     })
                     Spacer()
-                    .sheet(isPresented: self.$SelSubject, content: {
-                        self.subSelView
-                    })
-                    .onAppear(){
-                        if self.subjects == [] {
-                            self.loadSubjectArray()
+                        .sheet(isPresented: self.$SelSubject, content: {
+                            self.subSelView
+                        })
+                        .onAppear(){
+                            if self.subjects == [] {
+                                self.loadSubjectArray()
+                            }
                         }
-                    }
                     //MARK: 시계
                     if self.scWidth < self.scHeight {
                         self.clockView
@@ -118,6 +120,12 @@ struct Home: View {
                     Spacer()
                 }
             }
+        }
+        .background {
+            // Add the adViewControllerRepresentable to the background so it
+            // doesn't influence the placement of other views in the view hierarchy.
+            adViewControllerRepresentable
+                .frame(width: .zero, height: .zero)
         }
     }
     
@@ -175,8 +183,10 @@ extension Home {
                             timers.SettingDegree = self.degree
                             timers.start()
                             self.over = false
+                            adCoordinator.loadAd()
                         } else {
                             timers.Pause()
+                            adCoordinator.presentAd(from: adViewControllerRepresentable.viewController)
                         }
                         self.pauses.toggle()
                     } label: {
@@ -515,7 +525,11 @@ extension Home {
         self.settingAngle = 0.0
         do {
             let asset = NSDataAsset(name: self.selectedBell)
-            player = try AVAudioPlayer(data:asset!.data, fileTypeHint:"wav")
+            guard let sound = asset?.data else 
+            {
+                return
+            }
+            player = try AVAudioPlayer(data:sound, fileTypeHint:"wav")
             player?.play()
         } catch {
             print(error.localizedDescription)

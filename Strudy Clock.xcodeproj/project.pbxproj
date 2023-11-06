@@ -22,6 +22,8 @@
 		034CA04B2ADE2E6000BDD28F /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CA04A2ADE2E6000BDD28F /* Timer.swift */; };
 		034CA04E2AE5ED8000BDD28F /* DecodeYaml.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CA04D2AE5ED8000BDD28F /* DecodeYaml.swift */; };
 		03807AC42AEF604300D51D89 /* graphViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03807AC32AEF604300D51D89 /* graphViewBuilder.swift */; };
+		03AB9C562AF07A7C00DAE42A /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 03AB9C552AF07A7C00DAE42A /* GoogleMobileAds */; };
+		03AB9C582AF08A5500DAE42A /* PauseAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AB9C572AF08A5500DAE42A /* PauseAds.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +63,7 @@
 		034CA04C2ADF527100BDD28F /* Strudy-Clock-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Strudy-Clock-Info.plist"; sourceTree = SOURCE_ROOT; };
 		034CA04D2AE5ED8000BDD28F /* DecodeYaml.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodeYaml.swift; sourceTree = "<group>"; };
 		03807AC32AEF604300D51D89 /* graphViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = graphViewBuilder.swift; sourceTree = "<group>"; };
+		03AB9C572AF08A5500DAE42A /* PauseAds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseAds.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03AB9C562AF07A7C00DAE42A /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +125,7 @@
 				034CA0442ADD4A0400BDD28F /* SettingView.swift */,
 				034CA04D2AE5ED8000BDD28F /* DecodeYaml.swift */,
 				03807AC32AEF604300D51D89 /* graphViewBuilder.swift */,
+				03AB9C572AF08A5500DAE42A /* PauseAds.swift */,
 				0324672D2AE958EE00D2D19E /* README.md */,
 				034CA01A2ADD483800BDD28F /* Assets.xcassets */,
 				034CA01C2ADD483800BDD28F /* Preview Content */,
@@ -169,6 +174,9 @@
 			dependencies = (
 			);
 			name = "Strudy Clock";
+			packageProductDependencies = (
+				03AB9C552AF07A7C00DAE42A /* GoogleMobileAds */,
+			);
 			productName = "Strudy Clock";
 			productReference = 034CA0132ADD483700BDD28F /* Strudy Clock.app */;
 			productType = "com.apple.product-type.application";
@@ -241,6 +249,9 @@
 				Base,
 			);
 			mainGroup = 034CA00A2ADD483700BDD28F;
+			packageReferences = (
+				03AB9C542AF07A7C00DAE42A /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+			);
 			productRefGroup = 034CA0142ADD483700BDD28F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -289,6 +300,7 @@
 				034CA04E2AE5ED8000BDD28F /* DecodeYaml.swift in Sources */,
 				034CA04B2ADE2E6000BDD28F /* Timer.swift in Sources */,
 				03807AC42AEF604300D51D89 /* graphViewBuilder.swift in Sources */,
+				03AB9C582AF08A5500DAE42A /* PauseAds.swift in Sources */,
 				034CA0472ADD4A1F00BDD28F /* StatisticView.swift in Sources */,
 				034CA0452ADD4A0400BDD28F /* SettingView.swift in Sources */,
 				034CA0412ADD49D800BDD28F /* Home.swift in Sources */,
@@ -471,6 +483,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.new.dazaba.Strudy-Clock";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -502,6 +515,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.new.dazaba.Strudy-Clock";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -626,6 +640,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		03AB9C542AF07A7C00DAE42A /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.12.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		03AB9C552AF07A7C00DAE42A /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03AB9C542AF07A7C00DAE42A /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 034CA00B2ADD483700BDD28F /* Project object */;
 }
