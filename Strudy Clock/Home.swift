@@ -136,6 +136,7 @@ extension Home {
     
     var clockView: some View {
         Group{
+            //MARK: Clock
             ZStack{
                 Circle()
                     .frame(width: self.clockSize*4)
@@ -160,6 +161,7 @@ extension Home {
                         }
                     }
                 knob
+                //MARK: 시작 버튼
                 ZStack{
                     Circle()
                         .foregroundStyle(.white)
@@ -180,11 +182,13 @@ extension Home {
                             return
                         }
                         if self.pauses {
+                            adCoordinator.loadAd()
                             timers.SettingDegree = self.degree
                             timers.start()
                             self.over = false
                             adCoordinator.loadAd()
                         } else {
+                            adCoordinator.presentAd(from: adViewControllerRepresentable.viewController)
                             timers.Pause()
                             adCoordinator.presentAd(from: adViewControllerRepresentable.viewController)
                         }
