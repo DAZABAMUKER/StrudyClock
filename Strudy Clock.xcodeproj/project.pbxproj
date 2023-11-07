@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0313FB112AFA086800104B23 /* GraphDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313FB102AFA086800104B23 /* GraphDetailView.swift */; };
 		0324672E2AE958EE00D2D19E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0324672D2AE958EE00D2D19E /* README.md */; };
 		034CA0172ADD483700BDD28F /* Strudy_ClockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CA0162ADD483700BDD28F /* Strudy_ClockApp.swift */; };
 		034CA0192ADD483700BDD28F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CA0182ADD483700BDD28F /* ContentView.swift */; };
@@ -44,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0313FB102AFA086800104B23 /* GraphDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphDetailView.swift; sourceTree = "<group>"; };
 		0324672D2AE958EE00D2D19E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		034CA0132ADD483700BDD28F /* Strudy Clock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Strudy Clock.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		034CA0162ADD483700BDD28F /* Strudy_ClockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strudy_ClockApp.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				034CA0162ADD483700BDD28F /* Strudy_ClockApp.swift */,
 				034CA0182ADD483700BDD28F /* ContentView.swift */,
 				034CA0462ADD4A1F00BDD28F /* StatisticView.swift */,
+				0313FB102AFA086800104B23 /* GraphDetailView.swift */,
 				034CA04A2ADE2E6000BDD28F /* Timer.swift */,
 				034CA0482ADD523A00BDD28F /* TimerView.swift */,
 				034CA0402ADD49D800BDD28F /* Home.swift */,
@@ -305,6 +308,7 @@
 				034CA0452ADD4A0400BDD28F /* SettingView.swift in Sources */,
 				034CA0412ADD49D800BDD28F /* Home.swift in Sources */,
 				034CA0172ADD483700BDD28F /* Strudy_ClockApp.swift in Sources */,
+				0313FB112AFA086800104B23 /* GraphDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

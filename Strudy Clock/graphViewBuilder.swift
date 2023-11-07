@@ -92,8 +92,27 @@ struct graphViewBuilder: ViewModifier {
     }
 }
 
+struct grapDetailhViewBuilder: ViewModifier {
+    
+    @State var subTimeDetail = false
+    var sub: String
+    var data: [YamlData]
+    
+    public func body(content: Content) -> some View {
+        content
+            .onTapGesture {
+                self.subTimeDetail = true
+            }
+            .sheet(isPresented: self.$subTimeDetail) {
+                GraphSubDetailView(datas: self.data, sub: sub)
+            }
+    }
+}
 extension View {
     func STime(data: Binding<[YamlData]>, sub: String) -> some View {
         self.modifier(graphViewBuilder(timeData: data, sub: sub))
+    }
+    func SDetail(sub: String, data: [YamlData]) -> some View {
+        self.modifier(grapDetailhViewBuilder(sub: sub, data: data))
     }
 }

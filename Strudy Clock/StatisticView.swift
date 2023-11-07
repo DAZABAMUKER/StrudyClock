@@ -17,6 +17,8 @@ struct StatisticView: View {
     
     @State var scWidth = 0.0
     @State var scHeight = 0.0
+    @State var totalTimeDetail = false
+    @State var subTimeDetail = false
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
     @Environment(\.colorScheme) var colorScheme
@@ -128,12 +130,17 @@ struct StatisticView: View {
                                 }
                             }
                             .padding()
-
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .foregroundStyle(self.colorScheme == .dark ? Color.black : Color.white)
                                     .shadow(radius: 10)
                             )
+                            .onTapGesture {
+                                self.totalTimeDetail = true
+                            }
+                            .sheet(isPresented: $totalTimeDetail) {
+                                GraphDetailView(data: self.data?.data ?? [])
+                            }
                         }
                         
                         //LazyVGrid(columns: columns, con<<#Content: View#>>tent: {
@@ -229,6 +236,7 @@ struct StatisticView: View {
                                                 .stroke(lineWidth: 3.0)
                                                 .foregroundStyle(self.colorScheme == .dark ? ClockColor[0] : ClockColor[0])
                                         }
+                                        .SDetail(sub: sub, data: self.data?.data ?? [])
                                         VStack{
                                             Text("오늘 공부 시간")
                                                 .STime(data: self.$sevenTimeData, sub: sub)
@@ -332,7 +340,7 @@ struct StatisticView: View {
                                                 
                                             }
                                         }
-                                        
+                                        .SDetail(sub: sub, data: self.data?.data ?? [])
                                     }
                                     .padding(10)
                                     .frame(width: self.scWidth < self.scHeight ? self.scWidth*0.45 : (self.scHeight)*0.45, height: self.scWidth < self.scHeight ? self.scWidth*0.45 : self.scHeight*0.45)
@@ -341,6 +349,7 @@ struct StatisticView: View {
                                             .stroke(lineWidth: 3.0)
                                             .foregroundStyle(self.colorScheme == .dark ? ClockColor[0] : ClockColor[0])
                                     }
+                                    
                                     VStack{
                                         Text("오늘 공부 시간")
                                             .STime(data: self.$sevenTimeData, sub: sub)
