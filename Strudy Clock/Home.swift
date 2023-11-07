@@ -555,6 +555,7 @@ extension Home {
         } else {
             results = "\(String(format:"%02d",timeDict[.Hour] ?? 0)) : \(String(format:"%02d",timeDict[.Minute] ?? 0)) : \(String(format:"%02d",timeDict[.Second] ?? 0))"
         }
+        
         return results
     }
     

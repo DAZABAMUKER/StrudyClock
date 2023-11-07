@@ -22,13 +22,6 @@ struct ContentView: View {
     
     var body: some View {
         ZStack{
-            if darkMode == "다크모드" {
-                VStack{}
-                    .preferredColorScheme(/*@START_MENU_TOKEN@*/.dark/*@END_MENU_TOKEN@*/)
-            } else if darkMode == "라이트 모드" {
-                VStack{}
-                    .preferredColorScheme(.light)
-            } else {}
             TabView(selection: $tabIndex,
                     content:  {
                 StatisticView().tag(TabIndex.Statistic)
@@ -36,6 +29,7 @@ struct ContentView: View {
                 SettingView().tag(TabIndex.Setting)
             })
             .tabViewStyle(.page)
+            .preferredColorScheme(self.darkMode == "다크모드" ? .dark : .light)
         }
         
     }
