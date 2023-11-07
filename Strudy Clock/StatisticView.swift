@@ -25,7 +25,7 @@ struct StatisticView: View {
         //let columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
         ZStack{
             GeometryReader{ geometry in
-                ZStack{Spacer()}.onAppear() {
+                ZStack{}.onAppear() {
                     self.scHeight = geometry.size.height
                     self.scWidth = geometry.size.width
                     //print(geometry.size.height)
@@ -35,7 +35,7 @@ struct StatisticView: View {
                     self.scWidth = geometry.size.width
                     print(geometry.size.height)
                     print(geometry.size.width)
-                    print("---------")
+                    
                 }
                 .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification), perform: { _ in
                     self.scHeight = 0
@@ -79,7 +79,7 @@ struct StatisticView: View {
                                     .foregroundStyle(ClockColor[0])
                             }
                             
-                            .frame(width: self.scWidth > self.scHeight ? self.scHeight*1.8 + 10 : self.scWidth*0.85, height: self.scWidth > self.scHeight ? self.scHeight*0.5 : self.scWidth*2/5)
+                            .frame(width: self.scWidth > self.scHeight ? self.scWidth*0.9 : self.scWidth*0.85, height: self.scWidth > self.scHeight ? self.scHeight*0.5 : self.scWidth*2/5)
                             //.chartScrollableAxes(.horizontal)
                             //.chartXVisibleDomain(length: 7 )
                             .chartYAxis {
@@ -223,7 +223,7 @@ struct StatisticView: View {
                                             
                                         }
                                         .padding(10)
-                                        .frame(width: self.scWidth < self.scHeight ? self.scWidth*0.45 : (self.scHeight)*0.45, height: self.scWidth < self.scHeight ? self.scWidth*0.45 : self.scHeight*0.45)
+                                        .frame(width: self.scWidth*0.2, height: self.scWidth*0.2)
                                         .background{
                                             RoundedRectangle(cornerRadius: 10)
                                                 .stroke(lineWidth: 3.0)
@@ -241,7 +241,7 @@ struct StatisticView: View {
                                              */
                                         }
                                         .foregroundStyle(.white)
-                                        .frame(width: self.scWidth < self.scHeight ? self.scWidth*0.45 : (self.scHeight)*0.45, height: self.scWidth < self.scHeight ? self.scWidth*0.45 : self.scHeight*0.45)
+                                        .frame(width: self.scWidth*0.2, height: self.scWidth*0.2)
                                         .background{
                                             RoundedRectangle(cornerRadius: 10)
                                                 .foregroundStyle(ClockColor[0])

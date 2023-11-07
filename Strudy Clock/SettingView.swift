@@ -24,6 +24,7 @@ struct SettingView: View {
     var body: some View {
         VStack(spacing: 0){
             ZStack{
+                /*
                 if self.muteModeSwitch {
                     ZStack{}.onAppear(){
                         do {
@@ -41,8 +42,8 @@ struct SettingView: View {
                         }
                     }
                 }
+                 */
             }
-            
             Text("설정")
                 .font(.title)
                 .bold()

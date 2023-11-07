@@ -19,7 +19,7 @@ struct Home: View {
     
     @State var SelSubject = false
     @State var subjects: [String] = []
-    @State var selectedSub = "과목을 선택하세요"
+    @Binding var selectedSub: String
     @State var makeSub = false
     @State var addedSub = ""
     
@@ -27,23 +27,22 @@ struct Home: View {
     
     @State var sujectAlert = false
     
-    @State var degree = 3599.9
+    @Binding var degree: Double
     @State var scWidth = 0.0
     @State var scHeight = 0.0
     @State var clockSize = 0.0
-    @State var over = true
-    @State var pauses = true
+    @Binding var over: Bool
+    @Binding var pauses: Bool
     @State var overClock = false
-    @State var settingAngle = 0.0
+    @Binding var settingAngle: Double
     @State var oldLocation: CGPoint = CGPoint.zero
     @State var colorNumber = ClockColor.count - 1
     @State var settingHour = 1.0
     
-    @StateObject var timers = Timers()
-    @Environment(\.scenePhase) var phase
+    @ObservedObject var timers: Timers
     @Environment(\.colorScheme) var colorScheme
     
-    @State var player: AVAudioPlayer?
+    @Binding var player: AVAudioPlayer?
     @AppStorage("KEY") var selectedBell: String = "cow-bells"
     
     private let adCoordinator = AdCoordinator()
@@ -153,13 +152,7 @@ extension Home {
                     .rotationEffect(.degrees(270))
                     .foregroundStyle(ClockColor[self.colorNumber-1])
                     .shadow(radius: 5)
-                    .onChange(of: phase) { phaseStatus in
-                        if phaseStatus == .background {
-                            timers.backProcess()
-                        } else {
-                            timers.backgroundTime()
-                        }
-                    }
+                    
                 knob
                 //MARK: 시작 버튼
                 ZStack{
@@ -561,6 +554,13 @@ extension Home {
     
     private var functions: some View {
         ZStack{
+//            if self.degree - timers.value < 0 {
+//                VStack{}.onAppear(){
+//                    TimeOver()
+//                }
+//            } else {
+//                
+//            }
             if self.AOD {
                 VStack{}.onAppear() {
                     UIApplication.shared.isIdleTimerDisabled = true
@@ -587,13 +587,7 @@ extension Home {
                     //print(timers.pauses)
                 }
             }
-            if self.degree - timers.value < 0 {
-                VStack{}.onAppear(){
-                    TimeOver()
-                }
-            } else {
-                
-            }
+            
             if degree.truncatingRemainder(dividingBy: 3600)-timers.value < 1.0 && degree - timers.value > 1 {
                 VStack{}.onAppear() {
                     if !self.pauses {
@@ -641,6 +635,3 @@ enum Times {
     case Second
 }
 
-#Preview {
-    Home()
-}
