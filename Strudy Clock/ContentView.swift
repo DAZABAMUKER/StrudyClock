@@ -28,7 +28,9 @@ struct ContentView: View {
     @State var pauses = true
     @State var settingAngle = 0.0
     @AppStorage("KEY") var selectedBell: String = "cow-bells"
+    @AppStorage("mute") var muteModeSwitch: Bool = false
     @State var player: AVAudioPlayer?
+    @State var session: AVAudioSession = AVAudioSession.sharedInstance()
     
     func TimeOver() {
         timers.SaveData(subjectOfTimer: self.selectedSub)
@@ -72,6 +74,23 @@ struct ContentView: View {
                     timers.backgroundTime()
                 }
             }
+            if self.muteModeSwitch {
+                ZStack{}.onAppear(){
+                    do {
+                        try self.session.setCategory(.playback)
+                    } catch(let error) {
+                        print(error.localizedDescription)
+                    }
+                }
+            } else {
+                ZStack{}.onAppear(){
+                    do {
+                        try self.session.setCategory(.soloAmbient)
+                    } catch(let error) {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
             if self.degree - timers.value < 0 {
                 VStack{}.onAppear(){
                     TimeOver()
@@ -80,7 +99,6 @@ struct ContentView: View {
                 
             }
         }
-        
     }
 }
 

@@ -18,30 +18,14 @@ struct SettingView: View {
     var bells = ["cow-bells", "alarm", "uprising2", "없음"]
     var mode = ["다크모드", "라이트모드", "자동"]
     
-    @State var muteModeSwitch = false
+    @AppStorage("mute") var muteModeSwitch: Bool = false
     
     
     var body: some View {
         VStack(spacing: 0){
             ZStack{
                 /*
-                if self.muteModeSwitch {
-                    ZStack{}.onAppear(){
-                        do {
-                            try AVAudioSession.sharedInstance().setCategory(.playback)
-                        } catch(let error) {
-                            print(error.localizedDescription)
-                        }
-                    }
-                } else {
-                    ZStack{}.onAppear(){
-                        do {
-                            try AVAudioSession.sharedInstance().setCategory(.soloAmbient)
-                        } catch(let error) {
-                            print(error.localizedDescription)
-                        }
-                    }
-                }
+                
                  */
             }
             Text("설정")
