@@ -14,9 +14,9 @@ struct SettingView: View {
     //@Binding var selectedBell: String
     //@Environment(\.colorScheme) var colorScheme
     @AppStorage("KEY") var selectedBell: String = "cow-bells"
-    @AppStorage("darkMode") var darkMode: String = "자동"
+    @AppStorage("darkMode") var darkMode: String = String(localized: "자동")
     var bells = ["cow-bells", "alarm", "uprising2", "없음"]
-    var mode = ["다크모드", "라이트모드", "자동"]
+    var mode = [String(localized: "다크모드"), String(localized: "라이트모드"), String(localized: "자동")]
     
     @AppStorage("mute") var muteModeSwitch: Bool = false
     
@@ -44,7 +44,7 @@ struct SettingView: View {
                         Text($0).tag($0)
                     }
                 } label: {
-                    Text("벨소리 선택")
+                    Text("벨 소리 선택")
                 }
                 .pickerStyle(.menu)
                 .tint(ClockColor[0])
@@ -120,7 +120,7 @@ struct SettingView: View {
                 }
             }
             .padding(5)
-            Text("uprising2 sound is shared from JFRecords")
+            Text("uprising2의 지식재산권은 JFRecords에 있습니다.")
                 .font(.footnote)
                 .padding()
             Spacer()

@@ -19,9 +19,9 @@ struct graphViewBuilder: ViewModifier {
         let timeDict: [Times : Int] = [.Hour : seconds / 3600, .Minute : (seconds % 3600) / 60, .Second : (seconds % 3600) % 60 ]
         var results = ""
         if seconds < 3600 {
-            results = "\(String(format:"%02d",(timeDict[.Minute] ?? 0) + 60 * (timeDict[.Hour] ?? 0)))분 \(String(format:"%02d",timeDict[.Second] ?? 0))초"
+            results = "\(String(format:"%02d",(timeDict[.Minute] ?? 0) + 60 * (timeDict[.Hour] ?? 0)))\(String(localized: "분")) \(String(format:"%02d",timeDict[.Second] ?? 0))\(String(localized: "초"))"
         } else {
-            results = "\(String(format:"%02d",timeDict[.Hour] ?? 0))시간 \(String(format:"%02d",timeDict[.Minute] ?? 0))분 \(String(format:"%02d",timeDict[.Second] ?? 0))초"
+            results = "\(String(format:"%02d",timeDict[.Hour] ?? 0))\(String(localized: "시간")) \(String(format:"%02d",timeDict[.Minute] ?? 0))\(String(localized: "분")) \(String(format:"%02d",timeDict[.Second] ?? 0))\(String(localized: "초"))"
         }
         return results
     }
@@ -32,6 +32,7 @@ struct graphViewBuilder: ViewModifier {
                 content
                     .bold()
                     .font(.title3)
+                    .multilineTextAlignment(.center)
                     .onAppear(){
                         let timeWant = timeData.last?.subject.filter{$0.subject == sub}.first?.time ?? 0.0
                         //print("timeWant: \(timeWant)")
@@ -47,6 +48,7 @@ struct graphViewBuilder: ViewModifier {
                 Text("이번주 평균 시간")
                     .bold()
                     .font(.title3)
+                    .multilineTextAlignment(.center)
                     .onAppear(){
                         let timeWant =  timeData.map{$0.subject}.flatMap{$0}.filter{$0.subject == sub}.map{$0.time}.reduce(0.0){$0 + $1} / 7.0
                         self.timeString = secondsToHoursMinutesSeconds(Int(timeWant))
@@ -61,6 +63,7 @@ struct graphViewBuilder: ViewModifier {
                 Text("이번주 총 시간")
                     .bold()
                     .font(.title3)
+                    .multilineTextAlignment(.center)
                     .onAppear(){
                         let timeWant = timeData.map{$0.subject}.flatMap{$0}.filter{$0.subject == sub}.map{$0.time}.reduce(0.0){$0 + $1}
                         self.timeString = secondsToHoursMinutesSeconds(Int(timeWant))

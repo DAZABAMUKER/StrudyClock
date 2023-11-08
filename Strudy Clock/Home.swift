@@ -74,7 +74,7 @@ struct Home: View {
                     self.clockView
                 }
                 VStack{
-                    Toggle("화면 항상 켜기", isOn: $AOD)
+                    Toggle(String(localized: "화면 항상 켜기"), isOn: $AOD)
                     //.foregroundStyle(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
                         .tint(Color(red: 216.0/255.0, green: 63.0/255.0, blue: 49.0/255.0))
                         .padding()
@@ -87,7 +87,7 @@ struct Home: View {
                                 .fontDesign(.rounded)
                                 .font(.largeTitle)
                                 .bold()
-                                .foregroundStyle(self.selectedSub == "과목을 선택하세요" ? .gray : self.colorScheme == .dark ? Color.white : Color.black)
+                                .foregroundStyle(self.selectedSub == String(localized: "과목을 선택하세요") ? .gray : self.colorScheme == .dark ? Color.white : Color.black)
                             if !self.pauses {
                                 Button{
                                     TimeOver()

@@ -24,7 +24,7 @@ struct ContentView: View {
     @StateObject var timers = Timers()
     @Environment(\.scenePhase) var phase
     @State var degree = 3599.0
-    @State var selectedSub = "과목을 선택하세요"
+    @State var selectedSub = String(localized: "과목을 선택하세요")
     @State var over = true
     @State var pauses = true
     @State var settingAngle = 0.0
@@ -76,7 +76,7 @@ struct ContentView: View {
                 SettingView().tag(TabIndex.Setting)
             })
             .tabViewStyle(.page)
-            .preferredColorScheme(self.darkMode == "다크모드" ? .dark : self.darkMode == "라이트모드" ? .light : self.colorscheme)
+            .preferredColorScheme(self.darkMode == String(localized: "다크모드") ? .dark : self.darkMode == String(localized: "라이트모드") ? .light : self.colorscheme)
             .onAppear(){
                 UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .sound, .alert]) { (_, _) in
                     
