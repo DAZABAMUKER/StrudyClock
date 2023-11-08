@@ -2,7 +2,7 @@
 //  StrudyWidgetBundle.swift
 //  StrudyWidget
 //
-//  Created by 안병욱 on 11/7/23.
+//  Created by 안병욱 on 11/8/23.
 //
 
 import WidgetKit
