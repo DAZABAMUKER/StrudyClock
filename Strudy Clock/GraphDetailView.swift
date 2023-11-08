@@ -102,8 +102,8 @@ struct GraphDetailView: View {
                         AxisMarks(values: .automatic(desiredCount: 3)) { value in
                             AxisGridLine(centered: true, stroke: StrokeStyle(lineWidth: 0.5))
                             AxisValueLabel() {
-                                if let intValue = value.as(Double.self) {
-                                    let times = String(format: "%.2f", intValue)
+                                if let doubleValue = value.as(Double.self) {
+                                    let times = String(format: "%.2f", doubleValue)
                                     Text("\(times) 시간")
                                         .font(.system(size: 10))
                                 }
@@ -259,8 +259,8 @@ struct GraphSubDetailView: View {
                         AxisMarks(values: .automatic(desiredCount: 3)) { value in
                             AxisGridLine(centered: true, stroke: StrokeStyle(lineWidth: 0.5))
                             AxisValueLabel() {
-                                if let intValue = value.as(Double.self) {
-                                    let times = String(format: "%.2f", intValue)
+                                if let doubleValue = value.as(Double.self) {
+                                    let times = String(format: "%.2f", doubleValue)
                                     Text("\(times) 시간")
                                         .font(.system(size: 10))
                                 }

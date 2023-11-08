@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import UserNotifications
 
 enum TabIndex {
     case Honw
@@ -49,11 +50,20 @@ struct ContentView: View {
             }
             player = try AVAudioPlayer(data:sound, fileTypeHint:"wav")
             player?.play()
+            self.notify()
         } catch {
             print(error.localizedDescription)
         }
     }
     
+    func notify() {
+        let content = UNMutableNotificationContent()
+        content.title = "타이머 종료!"
+        content.body = "타이머가 종료 되었습니다. \n오늘도 열심히 공부하셨군요! 멋져요!"
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let req = UNNotificationRequest(identifier: "timerOver", content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(req, withCompletionHandler: nil)
+    }
     
     var body: some View {
         ZStack{
@@ -67,13 +77,18 @@ struct ContentView: View {
             })
             .tabViewStyle(.page)
             .preferredColorScheme(self.darkMode == "다크모드" ? .dark : self.darkMode == "라이트모드" ? .light : self.colorscheme)
-            .onChange(of: phase) { phaseStatus in
-                if phaseStatus == .background {
-                    timers.backProcess()
-                } else {
-                    timers.backgroundTime()
+            .onAppear(){
+                UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .sound, .alert]) { (_, _) in
+                    
                 }
             }
+//            .onChange(of: phase) { phaseStatus in
+//                if phaseStatus == .background {
+//                    timers.backProcess()
+//                } else {
+//                    timers.backgroundTime()
+//                }
+//            }
             if self.muteModeSwitch {
                 ZStack{}.onAppear(){
                     do {
