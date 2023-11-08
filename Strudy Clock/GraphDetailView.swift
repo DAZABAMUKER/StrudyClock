@@ -14,6 +14,7 @@ struct GraphDetailView: View {
     @State var scWidth = 0.0
     @State var scHeight = 0.0
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
     @State var total = ""
     @State var graphWidth = 0.0
     @State var over = false
@@ -33,7 +34,7 @@ struct GraphDetailView: View {
         var dateComponent = calander.dateComponents([.year, .month, .day], from: Date())
         dateComponent.timeZone = NSTimeZone.system
         let daysAgo = Calendar.current.date(byAdding: .day, value: -20, to: Calendar.current.date(from: dateComponent)!) ?? Date()
-        let results = Calendar.current.date(from: self.data.first?.date ?? dateComponent)!.compare(daysAgo) == .orderedDescending
+        let results = Calendar.current.date(from: self.data.first?.date ?? dateComponent)!.compare(daysAgo) == .orderedAscending
         print(results)
         return results
     }
@@ -62,7 +63,23 @@ struct GraphDetailView: View {
                 })
             }
             VStack{
-                Text("총 공부 시간")
+                HStack{
+                    Text("총 공부 시간")
+                    .font(.title3)
+                    .bold()
+                    .padding()
+                Spacer()
+                Button{
+                    dismiss()
+                } label: {
+                    Image(systemName: "x.circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(ClockColor[0])
+                        .padding()
+                }
+            }
                 ScrollView(.horizontal){
                     Chart(self.data, id: \.self) { time in
                         
@@ -78,7 +95,7 @@ struct GraphDetailView: View {
                         LineMark(x: .value("Day", Calendar.current.date(from: time.date)!, unit: .day), y: .value("Time", time.totalTime/3600))
                             .foregroundStyle(ClockColor[0])
                     }
-                    .frame(width: self.over ? self.graphWidth : self.scWidth*0.85, height: self.scWidth > self.scHeight ? self.scHeight*0.8 : self.scHeight*2/5)
+                    .frame(width: self.over ? self.graphWidth : self.scWidth*0.85, height: self.scWidth > self.scHeight ? self.scHeight*0.7 : self.scHeight*2/5)
                     //.chartScrollableAxes(.horizontal)
                     //.chartXVisibleDomain(length: 7 )
                     .chartYAxis {
@@ -148,6 +165,7 @@ struct GraphSubDetailView: View {
     @State var scWidth = 0.0
     @State var scHeight = 0.0
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
     @State var total = ""
     @State var graphWidth = 0.0
     @State var over = false
@@ -168,7 +186,7 @@ struct GraphSubDetailView: View {
         var dateComponent = calander.dateComponents([.year, .month, .day], from: Date())
         dateComponent.timeZone = NSTimeZone.system
         let daysAgo = Calendar.current.date(byAdding: .day, value: -20, to: Calendar.current.date(from: dateComponent)!) ?? Date()
-        let results = Calendar.current.date(from: self.datas.first?.date ?? dateComponent)!.compare(daysAgo) == .orderedDescending
+        let results = Calendar.current.date(from: self.datas.first?.date ?? dateComponent)!.compare(daysAgo) == .orderedAscending
         print(results)
         return results
     }
@@ -197,7 +215,23 @@ struct GraphSubDetailView: View {
                 })
             }
             VStack{
-                Text(self.sub)
+                HStack{
+                    Text(self.sub)
+                        .font(.title3)
+                        .bold()
+                        .padding()
+                    Spacer()
+                    Button{
+                        dismiss()
+                    } label: {
+                        Image(systemName: "x.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 25)
+                            .foregroundStyle(ClockColor[0])
+                            .padding()
+                    }
+                }
                 ScrollView(.horizontal){
                     Chart(self.datas, id: \.self) { data in
                         AreaMark(
@@ -218,7 +252,7 @@ struct GraphSubDetailView: View {
                         )
                     }
                     .foregroundStyle(ClockColor[0])
-                    .frame(width: self.over ? self.graphWidth : self.scWidth*0.85, height: self.scWidth > self.scHeight ? self.scHeight*0.8 : self.scHeight*2/5)
+                    .frame(width: self.over ? self.graphWidth : self.scWidth*0.85, height: self.scWidth > self.scHeight ? self.scHeight*0.7 : self.scHeight*2/5)
                     //.chartScrollableAxes(.horizontal)
                     //.chartXVisibleDomain(length: 7 )
                     .chartYAxis {
@@ -235,9 +269,6 @@ struct GraphSubDetailView: View {
                     }
                     .chartXAxis {
                         AxisMarks(values: .stride(by: .day, count: 2)) { value in
-                            //AxisGridLine(centered: true, stroke: StrokeStyle(lineWidth: 0.0))
-                            //AxisValueLabel(format: .dateTime.month().day())
-                            //AxisValueLabel("    일", centered: false)
                             
                             if let date = value.as(Date.self) {
                                 let month = Calendar.current.component(.month, from: date)

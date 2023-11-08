@@ -64,7 +64,7 @@ struct ContentView: View {
                 SettingView().tag(TabIndex.Setting)
             })
             .tabViewStyle(.page)
-            .preferredColorScheme(self.darkMode == "다크모드" ? .dark : .light)
+            .preferredColorScheme(self.darkMode == "다크모드" ? .dark : self.darkMode == "라이트모드" ? .light : self.colorscheme)
             .onChange(of: phase) { phaseStatus in
                 if phaseStatus == .background {
                     timers.backProcess()

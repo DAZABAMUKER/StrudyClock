@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		0313FB112AFA086800104B23 /* GraphDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313FB102AFA086800104B23 /* GraphDetailView.swift */; };
+		0313FB342AFA7C1F00104B23 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0313FB182AFA6E0F00104B23 /* WidgetKit.framework */; };
+		0313FB352AFA7C1F00104B23 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0313FB1A2AFA6E0F00104B23 /* SwiftUI.framework */; };
+		0313FB382AFA7C1F00104B23 /* StrudyWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313FB372AFA7C1F00104B23 /* StrudyWidgetBundle.swift */; };
+		0313FB3A2AFA7C1F00104B23 /* StrudyWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313FB392AFA7C1F00104B23 /* StrudyWidget.swift */; };
+		0313FB3C2AFA7C1F00104B23 /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313FB3B2AFA7C1F00104B23 /* AppIntent.swift */; };
+		0313FB3E2AFA7C2000104B23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0313FB3D2AFA7C2000104B23 /* Assets.xcassets */; };
+		0313FB422AFA7C2000104B23 /* StrudyWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0313FB332AFA7C1F00104B23 /* StrudyWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0324672E2AE958EE00D2D19E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0324672D2AE958EE00D2D19E /* README.md */; };
 		034CA0172ADD483700BDD28F /* Strudy_ClockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CA0162ADD483700BDD28F /* Strudy_ClockApp.swift */; };
 		034CA0192ADD483700BDD28F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CA0182ADD483700BDD28F /* ContentView.swift */; };
@@ -28,6 +35,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0313FB402AFA7C2000104B23 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 034CA00B2ADD483700BDD28F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0313FB322AFA7C1F00104B23;
+			remoteInfo = StrudyWidgetExtension;
+		};
 		034CA0242ADD483800BDD28F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 034CA00B2ADD483700BDD28F /* Project object */;
@@ -44,8 +58,30 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		0313FB2E2AFA6E1000104B23 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				0313FB422AFA7C2000104B23 /* StrudyWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0313FB102AFA086800104B23 /* GraphDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphDetailView.swift; sourceTree = "<group>"; };
+		0313FB182AFA6E0F00104B23 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		0313FB1A2AFA6E0F00104B23 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		0313FB332AFA7C1F00104B23 /* StrudyWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StrudyWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		0313FB372AFA7C1F00104B23 /* StrudyWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrudyWidgetBundle.swift; sourceTree = "<group>"; };
+		0313FB392AFA7C1F00104B23 /* StrudyWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrudyWidget.swift; sourceTree = "<group>"; };
+		0313FB3B2AFA7C1F00104B23 /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
+		0313FB3D2AFA7C2000104B23 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0313FB3F2AFA7C2000104B23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0324672D2AE958EE00D2D19E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		034CA0132ADD483700BDD28F /* Strudy Clock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Strudy Clock.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		034CA0162ADD483700BDD28F /* Strudy_ClockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strudy_ClockApp.swift; sourceTree = "<group>"; };
@@ -69,6 +105,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0313FB302AFA7C1F00104B23 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0313FB352AFA7C1F00104B23 /* SwiftUI.framework in Frameworks */,
+				0313FB342AFA7C1F00104B23 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		034CA0102ADD483700BDD28F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -94,12 +139,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0313FB172AFA6E0F00104B23 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0313FB182AFA6E0F00104B23 /* WidgetKit.framework */,
+				0313FB1A2AFA6E0F00104B23 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0313FB362AFA7C1F00104B23 /* StrudyWidget */ = {
+			isa = PBXGroup;
+			children = (
+				0313FB372AFA7C1F00104B23 /* StrudyWidgetBundle.swift */,
+				0313FB392AFA7C1F00104B23 /* StrudyWidget.swift */,
+				0313FB3B2AFA7C1F00104B23 /* AppIntent.swift */,
+				0313FB3D2AFA7C2000104B23 /* Assets.xcassets */,
+				0313FB3F2AFA7C2000104B23 /* Info.plist */,
+			);
+			path = StrudyWidget;
+			sourceTree = "<group>";
+		};
 		034CA00A2ADD483700BDD28F = {
 			isa = PBXGroup;
 			children = (
 				034CA0152ADD483700BDD28F /* Strudy Clock */,
 				034CA0262ADD483800BDD28F /* Strudy ClockTests */,
 				034CA0302ADD483800BDD28F /* Strudy ClockUITests */,
+				0313FB362AFA7C1F00104B23 /* StrudyWidget */,
+				0313FB172AFA6E0F00104B23 /* Frameworks */,
 				034CA0142ADD483700BDD28F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -110,6 +178,7 @@
 				034CA0132ADD483700BDD28F /* Strudy Clock.app */,
 				034CA0232ADD483800BDD28F /* Strudy ClockTests.xctest */,
 				034CA02D2ADD483800BDD28F /* Strudy ClockUITests.xctest */,
+				0313FB332AFA7C1F00104B23 /* StrudyWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -164,6 +233,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0313FB322AFA7C1F00104B23 /* StrudyWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0313FB432AFA7C2000104B23 /* Build configuration list for PBXNativeTarget "StrudyWidgetExtension" */;
+			buildPhases = (
+				0313FB2F2AFA7C1F00104B23 /* Sources */,
+				0313FB302AFA7C1F00104B23 /* Frameworks */,
+				0313FB312AFA7C1F00104B23 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StrudyWidgetExtension;
+			productName = StrudyWidgetExtension;
+			productReference = 0313FB332AFA7C1F00104B23 /* StrudyWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		034CA0122ADD483700BDD28F /* Strudy Clock */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 034CA0372ADD483800BDD28F /* Build configuration list for PBXNativeTarget "Strudy Clock" */;
@@ -171,10 +257,12 @@
 				034CA00F2ADD483700BDD28F /* Sources */,
 				034CA0102ADD483700BDD28F /* Frameworks */,
 				034CA0112ADD483700BDD28F /* Resources */,
+				0313FB2E2AFA6E1000104B23 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				0313FB412AFA7C2000104B23 /* PBXTargetDependency */,
 			);
 			name = "Strudy Clock";
 			packageProductDependencies = (
@@ -230,6 +318,9 @@
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					0313FB322AFA7C1F00104B23 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
 					034CA0122ADD483700BDD28F = {
 						CreatedOnToolsVersion = 15.0;
 					};
@@ -262,11 +353,20 @@
 				034CA0122ADD483700BDD28F /* Strudy Clock */,
 				034CA0222ADD483800BDD28F /* Strudy ClockTests */,
 				034CA02C2ADD483800BDD28F /* Strudy ClockUITests */,
+				0313FB322AFA7C1F00104B23 /* StrudyWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0313FB312AFA7C1F00104B23 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0313FB3E2AFA7C2000104B23 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		034CA0112ADD483700BDD28F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -294,6 +394,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0313FB2F2AFA7C1F00104B23 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0313FB3A2AFA7C1F00104B23 /* StrudyWidget.swift in Sources */,
+				0313FB382AFA7C1F00104B23 /* StrudyWidgetBundle.swift in Sources */,
+				0313FB3C2AFA7C1F00104B23 /* AppIntent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		034CA00F2ADD483700BDD28F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -332,6 +442,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0313FB412AFA7C2000104B23 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0313FB322AFA7C1F00104B23 /* StrudyWidgetExtension */;
+			targetProxy = 0313FB402AFA7C2000104B23 /* PBXContainerItemProxy */;
+		};
 		034CA0252ADD483800BDD28F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 034CA0122ADD483700BDD28F /* Strudy Clock */;
@@ -345,6 +460,60 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0313FB442AFA7C2000104B23 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CRJ3674QVG;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StrudyWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = StrudyWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.new.dazaba.Strudy-Clock.StrudyWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0313FB452AFA7C2000104B23 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CRJ3674QVG;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StrudyWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = StrudyWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.new.dazaba.Strudy-Clock.StrudyWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		034CA0352ADD483800BDD28F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -467,10 +636,11 @@
 		034CA0382ADD483800BDD28F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Strudy Clock/Preview Content\"";
 				DEVELOPMENT_TEAM = CRJ3674QVG;
 				ENABLE_PREVIEWS = YES;
@@ -499,10 +669,11 @@
 		034CA0392ADD483800BDD28F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Strudy Clock/Preview Content\"";
 				DEVELOPMENT_TEAM = CRJ3674QVG;
 				ENABLE_PREVIEWS = YES;
@@ -607,6 +778,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0313FB432AFA7C2000104B23 /* Build configuration list for PBXNativeTarget "StrudyWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0313FB442AFA7C2000104B23 /* Debug */,
+				0313FB452AFA7C2000104B23 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		034CA00E2ADD483700BDD28F /* Build configuration list for PBXProject "Strudy Clock" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
