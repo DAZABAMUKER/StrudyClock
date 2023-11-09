@@ -109,6 +109,7 @@ struct ContentView: View {
             if self.degree - timers.value < 0 {
                 VStack{}.onAppear(){
                     TimeOver()
+                    self.notify()
                 }
             } else {
                 
