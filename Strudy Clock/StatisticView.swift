@@ -44,6 +44,7 @@ struct StatisticView: View {
                     self.scWidth = 0
                 })
             }
+            
             ScrollView{
                 VStack{
                     Text("공부 통계")
@@ -144,6 +145,7 @@ struct StatisticView: View {
                         }
                         
                         //LazyVGrid(columns: columns, con<<#Content: View#>>tent: {
+                        
                         if self.scWidth > self.scHeight {
                             LazyVGrid(columns: columns) {
                                 ForEach(self.subjects, id: \.self) { sub in
@@ -258,7 +260,7 @@ struct StatisticView: View {
                                     }
                                 }
                             }
-                        } else {
+                        } else if self.scWidth < self.scHeight  {
                             ForEach(self.subjects, id: \.self) { sub in
                                 HStack{
                                     VStack{
@@ -370,6 +372,8 @@ struct StatisticView: View {
                                     }
                                 }
                             }
+                        } else {
+                            
                         }
                         Text("총 공부 시간: \(secondsToHoursMinutesSeconds(Int(self.data?.totalTime ?? 0)))")
                     }

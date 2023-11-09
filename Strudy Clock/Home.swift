@@ -85,7 +85,7 @@ struct Home: View {
                         HStack{
                             Text(self.selectedSub)
                                 .fontDesign(.rounded)
-                                .font(.largeTitle)
+                                .font((self.scWidth > self.scHeight)&&(self.scWidth*0.65 < self.scHeight) ? .system(size: 60.0) : .largeTitle)
                                 .bold()
                                 .foregroundStyle(self.selectedSub == String(localized: "과목을 선택하세요") ? .gray : self.colorScheme == .dark ? Color.white : Color.black)
                             if !self.pauses {
@@ -93,7 +93,7 @@ struct Home: View {
                                     TimeOver()
                                 } label: {
                                     Image(systemName: "stop.fill")
-                                        .font(.title)
+                                        .font((self.scWidth > self.scHeight)&&(self.scWidth*0.65 < self.scHeight) ? .system(size: 60.0) : .largeTitle)
                                         .foregroundStyle(ClockColor[0])
                                 }
                             }
@@ -418,7 +418,7 @@ extension Home {
                 })
             }
             Text(timers.timeString)
-                .font(.largeTitle)
+                .font((self.scWidth > self.scHeight)&&(self.scWidth*0.65 < self.scHeight) ? .system(size: 60.0) : .largeTitle)
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 .fontDesign(.rounded)
                 .foregroundStyle(ClockColor[0])
