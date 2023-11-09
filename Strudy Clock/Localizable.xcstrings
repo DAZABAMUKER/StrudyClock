@@ -2,7 +2,14 @@
   "sourceLanguage" : "ko",
   "strings" : {
     "    일" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "     day"
+          }
+        }
+      }
     },
     ":" : {
 
@@ -250,22 +257,22 @@
         }
       }
     },
-    "이번주 평균 시간" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Average time of last 7 days"
-          }
-        }
-      }
-    },
     "일" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "day"
+          }
+        }
+      }
+    },
+    "이번주 평균 시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average time of last 7 days"
           }
         }
       }
@@ -337,6 +344,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Time's up!"
+          }
+        }
+      }
+    },
+    "타이머가 종료 되었습니다. \n오늘도 열심히 공부하셨군요! 멋져요!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time's Up! You did a great job! "
           }
         }
       }

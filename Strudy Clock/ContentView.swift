@@ -58,8 +58,8 @@ struct ContentView: View {
     
     func notify() {
         let content = UNMutableNotificationContent()
-        content.title = "타이머 종료!"
-        content.body = "타이머가 종료 되었습니다. \n오늘도 열심히 공부하셨군요! 멋져요!"
+        content.title = String(localized: "타이머 종료!")
+        content.body = String(localized: "타이머가 종료 되었습니다. \n오늘도 열심히 공부하셨군요! 멋져요!")
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         let req = UNNotificationRequest(identifier: "timerOver", content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(req, withCompletionHandler: nil)

@@ -170,7 +170,7 @@ extension Home {
                         .foregroundStyle(.white)
                         .frame(width: self.clockSize)
                     Button{
-                        if self.selectedSub == "과목을 선택하세요" {
+                        if self.selectedSub == String(localized: "과목을 선택하세요") {
                             self.sujectAlert = true
                             return
                         }
@@ -223,7 +223,7 @@ extension Home {
                 .presentationDetents([.fraction(0.4)])
                 .onAppear() {
                     // 과목 선택 sheet 올라올 때 과목 선택 바로 반영
-                    if self.selectedSub == "과목을 선택하세요" {
+                    if self.selectedSub == String(localized: "과목을 선택하세요") {
                         if self.subjects.count != 0 {
                             self.selectedSub = self.subjects.first! //과목 목록이 있으면 첫 요소로 선택
                             //timers.subject = self.selectedSub
