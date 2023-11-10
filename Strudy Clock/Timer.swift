@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import AVFoundation
 //MARK: - 타이머 클래스 설명
 // 타이머의 핵심 코어 기능 집합 클래스
 class Timers: ObservableObject {
@@ -16,6 +17,7 @@ class Timers: ObservableObject {
     @Published var isRunning = false
     @Published var timeString: String = "01:00:00"
     @Published var SettingDegree: Double = 0.0 
+    @Published var session = AVAudioSession.sharedInstance()
     //@Published var subject: String = ""
     
     var oldData: Records? = nil
@@ -25,6 +27,23 @@ class Timers: ObservableObject {
         didSet {
             saveStartTime()
         }
+    }
+    
+    func play() {
+        do{
+            try session.setCategory(.playback)
+            let asset = NSDataAsset(name: "uprising2")
+            
+            guard let sound = asset?.data else
+            {
+                return
+            }
+            let player = try AVAudioPlayer(data:sound, fileTypeHint:"wav")
+            player.play()
+        } catch {
+            
+        }
+        
     }
     
     func saveStartTime() {

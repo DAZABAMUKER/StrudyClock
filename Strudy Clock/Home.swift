@@ -43,6 +43,7 @@ struct Home: View {
     @Environment(\.colorScheme) var colorScheme
     
     @Binding var player: AVAudioPlayer?
+    @Binding var session: AVAudioSession
     @AppStorage("KEY") var selectedBell: String = "cow-bells"
     
     private let adCoordinator = AdCoordinator()
@@ -179,6 +180,21 @@ extension Home {
                             timers.SettingDegree = self.degree
                             timers.start()
                             self.over = false
+                            do {
+                                let asset = NSDataAsset(name: "blank")
+                                guard let sound = asset?.data else
+                                {
+                                    return
+                                }
+                                    self.session = AVAudioSession.sharedInstance()
+                                    try self.session.setCategory(.playback)
+                                    try self.session.setActive(true)
+                                
+                                player = try AVAudioPlayer(data:sound, fileTypeHint:"wav")
+                                player?.play()
+                            } catch {
+                                print(error.localizedDescription)
+                            }
                             adCoordinator.loadAd()
                         } else {
                             adCoordinator.presentAd(from: adViewControllerRepresentable.viewController)

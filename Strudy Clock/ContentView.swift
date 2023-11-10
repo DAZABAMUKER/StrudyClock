@@ -52,13 +52,14 @@ struct ContentView: View {
             if self.muteModeSwitch {
                 self.session = AVAudioSession.sharedInstance()
                 try self.session.setCategory(.playback)
+                try self.session.setActive(true)
             } else {
                 self.session = AVAudioSession.sharedInstance()
                 try self.session.setCategory(.soloAmbient)
+                try self.session.setActive(true)
             }
             player = try AVAudioPlayer(data:sound, fileTypeHint:"wav")
             player?.play()
-            
         } catch {
             print(error.localizedDescription)
         }
@@ -79,7 +80,7 @@ struct ContentView: View {
             TabView(selection: $tabIndex,
                     content:  {
                 StatisticView().tag(TabIndex.Statistic)
-                Home(selectedSub: self.$selectedSub, degree: self.$degree, over: self.$over, pauses: self.$pauses, settingAngle: self.$settingAngle, timers: self.timers, player: self.$player).tag(TabIndex.Honw)
+                Home(selectedSub: self.$selectedSub, degree: self.$degree, over: self.$over, pauses: self.$pauses, settingAngle: self.$settingAngle, timers: self.timers, player: self.$player, session: $session).tag(TabIndex.Honw)
                 //Home(degree: self.$degree).tag(TabIndex.Honw)
                 SettingView().tag(TabIndex.Setting)
             })
