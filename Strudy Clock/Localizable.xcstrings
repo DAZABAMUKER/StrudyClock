@@ -131,7 +131,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dark mode"
+            "value" : "Darkmode"
           }
         }
       }
@@ -151,7 +151,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Light mode"
+            "value" : "Lightmode"
           }
         }
       }
@@ -247,22 +247,22 @@
         }
       }
     },
-    "이번주 총 시간" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Total time of last 7 days"
-          }
-        }
-      }
-    },
     "일" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "day"
+          }
+        }
+      }
+    },
+    "이번주 총 시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total time of last 7 days"
           }
         }
       }

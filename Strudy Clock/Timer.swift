@@ -67,7 +67,7 @@ extension Timers {
                         //self!.value += 1
                         
                         self!.value += 0.1
-                        //print(".")
+                        print(".")
                         //print(Int(self?.value ?? 0.0))
                         self!.timeString = self!.secondsToHoursMinutesSeconds(Int(self!.SettingDegree - (self!.value )))
                         //print(self?.timeString ?? "")

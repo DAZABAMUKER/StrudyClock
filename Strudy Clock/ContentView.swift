@@ -42,15 +42,23 @@ struct ContentView: View {
         self.pauses = true
         self.degree = 0.0
         self.settingAngle = 0.0
+        self.notify()
         do {
             let asset = NSDataAsset(name: self.selectedBell)
             guard let sound = asset?.data else
             {
                 return
             }
+            if self.muteModeSwitch {
+                self.session = AVAudioSession.sharedInstance()
+                try self.session.setCategory(.playback)
+            } else {
+                self.session = AVAudioSession.sharedInstance()
+                try self.session.setCategory(.soloAmbient)
+            }
             player = try AVAudioPlayer(data:sound, fileTypeHint:"wav")
             player?.play()
-            self.notify()
+            
         } catch {
             print(error.localizedDescription)
         }
@@ -89,27 +97,27 @@ struct ContentView: View {
 //                    timers.backgroundTime()
 //                }
 //            }
-            if self.muteModeSwitch {
-                ZStack{}.onAppear(){
-                    do {
-                        try self.session.setCategory(.playback)
-                    } catch(let error) {
-                        print(error.localizedDescription)
-                    }
-                }
-            } else {
-                ZStack{}.onAppear(){
-                    do {
-                        try self.session.setCategory(.soloAmbient)
-                    } catch(let error) {
-                        print(error.localizedDescription)
-                    }
-                }
-            }
+//            if self.muteModeSwitch {
+//                ZStack{}.onAppear(){
+//                    do {
+//                        try self.session.setCategory(.playback)
+//                    } catch(let error) {
+//                        print(error.localizedDescription)
+//                    }
+//                }
+//            } else {
+//                ZStack{}.onAppear(){
+//                    do {
+//                        try self.session.setCategory(.soloAmbient)
+//                    } catch(let error) {
+//                        print(error.localizedDescription)
+//                    }
+//                }
+//            }
             if self.degree - timers.value < 0 {
                 VStack{}.onAppear(){
                     TimeOver()
-                    self.notify()
+                    //self.notify()
                 }
             } else {
                 
